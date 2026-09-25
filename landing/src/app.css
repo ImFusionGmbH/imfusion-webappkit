@@ -1,0 +1,1045 @@
+/* ==========================================================================
+   ImFusion WebAppKit — landing page
+
+   Page-level composition only. Every interactive element is an @imfusion/web-ui
+   component; what lives here is the marketing layout those components sit in,
+   plus two bespoke illustrations (the app mockup and the workflow panel) that
+   portray product UI rather than being product UI.
+
+   Unlayered on purpose: the library keeps its own rules in @layer
+   imf-ui.components, so plain selectors here win without !important.
+   ========================================================================== */
+
+:root {
+  --wrap: 1220px;
+  --gutter: 32px;
+  --nav-h: 72px;
+  --ease: var(--imf-ui-ease-3);
+
+  /* The brand ink. There is no ink surface token — the dark surface ramp
+     bottoms out at a charcoal — so it is built from the same control the
+     light scheme uses for its deepest foreground. */
+  --band-ink: oklch(
+    var(--imf-ui-color-surface-fg-luma-light) var(--imf-ui-color-surface-chroma)
+      var(--imf-ui-color-surface-main-hue)
+  );
+}
+
+/* ------------------------------------------------------------- ink bands ---
+   The library's color scheme is a global switch: Lightning CSS compiles
+   light-dark() down to a toggle that is read where the tokens are declared
+   (:root), so setting `color-scheme` on a section changes nothing by itself.
+   Re-declaring the surface tokens on the band — from the library's own dark
+   controls, so no values are duplicated — gives it dark surfaces and lets the
+   components inside inherit them instead of being overridden one by one. */
+.nav,
+.hero,
+.section--dark,
+.foot {
+  color-scheme: dark;
+
+  --imf-ui-color-bg-main: oklch(
+    var(--imf-ui-color-surface-bg-luma-dark) var(--imf-ui-color-surface-chroma)
+      var(--imf-ui-color-surface-main-hue)
+  );
+  --imf-ui-color-bg-support: oklch(
+    calc(var(--imf-ui-color-surface-bg-luma-dark) + 0.025) var(--imf-ui-color-surface-chroma)
+      var(--imf-ui-color-surface-support-hue)
+  );
+  --imf-ui-color-bg-minor: oklch(
+    calc(var(--imf-ui-color-surface-bg-luma-dark) + 0.075) var(--imf-ui-color-surface-chroma)
+      var(--imf-ui-color-surface-minor-hue)
+  );
+  --imf-ui-color-fg-main: oklch(
+    var(--imf-ui-color-surface-fg-luma-dark) var(--imf-ui-color-surface-chroma)
+      var(--imf-ui-color-surface-main-hue)
+  );
+  --imf-ui-color-fg-support: color-mix(in oklch, var(--imf-ui-color-fg-main) 65%, transparent);
+  --imf-ui-color-fg-minor: color-mix(in oklch, var(--imf-ui-color-fg-main) 35%, transparent);
+  /* Brand blue holds the same lightness in both schemes; lift it so it reads
+     as an accent against ink rather than sinking into it. */
+  --imf-ui-color-fg-brand: oklch(
+    calc(var(--imf-ui-color-brand-luma) + 0.14) var(--imf-ui-color-brand-chroma)
+      var(--imf-ui-color-brand-hue)
+  );
+
+  background: var(--band-ink);
+  color: var(--imf-ui-color-fg-main);
+}
+
+/* Drenched brand blue. The fill sits mid-dark in both schemes, so type on it
+   takes the scheme-independent oncolor token — set here for anything that
+   inherits, and asked for explicitly through Typo's `oncolor` variant. */
+.cta,
+.card--brand {
+  color: var(--imf-ui-color-fg-oncolor);
+}
+
+/* Outline and ghost buttons draw their label and edge from fg-main, which is ink
+   — invisible on the blue field. Remapping is per button rather than per section
+   because a secondary button keeps its off-white fill and still needs that ink;
+   a section-wide override erased its label entirely. bg-main follows so the
+   hover state, which swaps ink and ground, stays legible too. */
+.btn--oncolor {
+  --imf-ui-color-fg-main: var(--imf-ui-color-fg-oncolor);
+  --imf-ui-color-bg-main: var(--imf-ui-color-bg-brand);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 24px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--imf-ui-color-bg-main);
+  color: var(--imf-ui-color-fg-main);
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Scoped off the library's components on purpose. This file is unlayered and the
+   library's rules live in cascade layers, so unlayered CSS wins no matter how
+   weak its selector — a bare `a` rule silently replaced the colour of every
+   Button rendered as a link, which is most of the calls to action on this page. */
+a:not([data-imf-ui-component]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* A Button asked to render as a link keeps the underline the user agent gives
+   every anchor, which makes it read as prose rather than as a control. Typo.Link
+   is deliberately left alone — there an underline is the point. */
+a[data-imf-ui-component="Button"] {
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--imf-ui-color-bg-brand);
+  color: var(--imf-ui-color-fg-oncolor);
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 999;
+  padding: 10px 16px;
+  background: var(--imf-ui-color-bg-brand);
+  color: var(--imf-ui-color-fg-oncolor);
+  transform: translateY(-160%);
+  transition: transform var(--imf-ui-duration-quick-2) var(--ease);
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* ------------------------------------------------- perspective layers --- */
+
+.layers {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.layers polygon {
+  fill: var(--layer-fill);
+  stroke: var(--layer-stroke);
+}
+.layers__spin {
+  transform-origin: center;
+  animation: layer-spin linear infinite;
+}
+@keyframes layer-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ------------------------------------------------------------- sections --- */
+
+.section {
+  position: relative;
+  padding: clamp(64px, 7.5vw, 104px) 0;
+}
+.section--light {
+  background: var(--imf-ui-color-bg-main);
+}
+.section--grey {
+  background: var(--imf-ui-color-bg-support);
+}
+.section--dark {
+  overflow: hidden;
+  isolation: isolate;
+}
+.section--dark .wrap {
+  position: relative;
+  z-index: 2;
+}
+
+/* The rosette's spinning transform becomes its own composited layer, and Chrome
+   lets that layer paint straight past an ancestor's `overflow: hidden` — the
+   workflow section's motif was tinting a rectangle across the callout two
+   sections below. Paint containment forces the clip that overflow alone did not;
+   the overflow rules stay as the fallback. */
+.hero,
+.section--dark,
+.cta {
+  contain: paint;
+}
+
+/* Anchored to the top of the band rather than its middle: the section grew a
+   full-width screenshot below the split, and a centred rosette ended up behind
+   it with only a sliver showing at the left edge. */
+.layers-bg {
+  position: absolute;
+  top: -12%;
+  left: -14vw;
+  width: clamp(620px, 62vw, 980px);
+  aspect-ratio: 1;
+  z-index: 0;
+  opacity: 0.55;
+  --layer-stroke: color-mix(in oklab, var(--imf-ui-color-fg-brand) 40%, transparent);
+  --layer-fill: color-mix(in oklab, var(--imf-ui-color-bg-brand) 3%, transparent);
+}
+
+.section__head {
+  max-width: 660px;
+  margin-bottom: 48px;
+}
+.section__head--center {
+  text-align: center;
+  margin-inline: auto;
+}
+
+/* Display scale: the library's headings are tuned for application density,
+   so marketing type is re-sized here. Tracking tightens as size grows. */
+.section__title {
+  font-size: clamp(31px, 3.8vw, 49px);
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(40px, 6vw, 88px);
+  align-items: start;
+}
+/* `order` reshuffles which column each half lands in, so the ratio flips too
+   and the code panel keeps the wider track. */
+.split--reverse {
+  grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
+}
+.split--reverse .split__intro {
+  order: 2;
+}
+.split--reverse .split__code {
+  order: 1;
+}
+.split__intro,
+.split__code {
+  min-width: 0;
+}
+
+.ticks {
+  margin-top: 32px;
+  display: grid;
+  gap: 14px;
+  padding-left: 0;
+  list-style: none;
+}
+.ticks li {
+  position: relative;
+  padding-left: 30px;
+  max-width: 48ch;
+}
+.ticks li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 14px;
+  height: 8px;
+  border-left: 1.5px solid var(--imf-ui-color-fg-brand);
+  border-bottom: 1.5px solid var(--imf-ui-color-fg-brand);
+  transform: rotate(-45deg);
+}
+
+.code__caption {
+  display: block;
+  margin-top: 20px;
+  max-width: 54ch;
+}
+
+/* ------------------------------------------------------------------ nav --- */
+
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  height: var(--nav-h);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background var(--imf-ui-duration-moderate-1) var(--ease),
+    border-color var(--imf-ui-duration-moderate-1) var(--ease);
+}
+/* Flat tonal ground rather than a blur: the identity rejects glassmorphism. */
+.nav.is-stuck {
+  background: var(--band-ink);
+  border-bottom-color: color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 12%, transparent);
+}
+.nav__inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+.brand__text {
+  color: var(--imf-ui-color-fg-oncolor);
+}
+.brand__text b {
+  font-weight: var(--imf-ui-font-weight-6);
+}
+
+.nav__links {
+  display: flex;
+  gap: 30px;
+  margin-right: auto;
+  font-size: var(--imf-ui-font-size-0);
+}
+.nav__links a {
+  color: color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 74%, transparent);
+  transition: color var(--imf-ui-duration-quick-2) var(--ease);
+}
+.nav__links a:hover {
+  color: var(--imf-ui-color-fg-oncolor);
+}
+
+.nav__cta {
+  flex: none;
+}
+.nav__toggle {
+  display: none;
+}
+
+/* ----------------------------------------------------------------- hero --- */
+
+.hero {
+  position: relative;
+  padding: calc(var(--nav-h) + 64px) 0 clamp(56px, 6vw, 96px);
+  overflow: hidden;
+  isolation: isolate;
+  --layer-stroke: color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 22%, transparent);
+  --layer-fill: color-mix(in oklab, var(--imf-ui-color-bg-brand) 3%, transparent);
+}
+/* The headline keeps the full width, then the copy and the running application
+   share a row beneath it: the screenshot is the claim the copy makes, so it has
+   to be on screen with it rather than below the fold. */
+.hero__inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  column-gap: clamp(32px, 4vw, 60px);
+  row-gap: clamp(28px, 3.4vw, 46px);
+  align-items: start;
+}
+.hero__head {
+  grid-column: 1 / -1;
+}
+/* The motif moves to the left half, behind the copy, now that the screenshot
+   occupies the right. */
+.hero__field {
+  position: absolute;
+  top: -30%;
+  left: -24vw;
+  width: clamp(680px, 70vw, 1080px);
+  aspect-ratio: 1;
+  z-index: 0;
+  opacity: 0.62;
+}
+
+.hero__title {
+  font-size: clamp(40px, 5.6vw, 78px);
+  line-height: 1.03;
+  letter-spacing: -0.028em;
+  text-wrap: balance;
+  max-width: 19ch;
+}
+.hero__title em {
+  font-style: normal;
+  color: var(--imf-ui-color-fg-brand);
+}
+
+.hero__lead {
+  max-width: 46ch;
+}
+/* Runs past its track towards the window edge: held inside the track the
+   application's own controls stop being readable, and a browser window that
+   continues off screen is the shape this has in use anyway. The hero clips it. */
+.hero__shot {
+  margin-right: clamp(-104px, -6.5vw, 0px);
+}
+.hero__buttons {
+  margin-top: 30px;
+}
+/* The command belongs to the lead, not to the buttons: it sits directly under
+   the sentence it follows and spans the column so it does not read as a chip
+   left over beneath the calls to action. */
+.hero__start {
+  margin-top: 26px;
+}
+.hero__label {
+  display: block;
+  max-width: 46ch;
+  margin: 16px 0 8px;
+}
+.hero__start > .hero__label:first-child {
+  margin-top: 0;
+}
+.hero__command {
+  width: 100%;
+}
+/* The pip line names an index URL, which is wider than this column. A sideways
+   scroll would hide the flag that makes the install resolve. */
+.hero__command pre {
+  white-space: pre-wrap;
+}
+
+/* --------------------------------------------------------- screenshots --- */
+
+/* A hard, unblurred offset: one flat plane stacked on another, per the
+   Restrained-Elevation Rule. Never a soft or glowing cast. */
+.shot__frame {
+  overflow: hidden;
+  background: var(--band-ink);
+  border: 1px solid color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 14%, transparent);
+  box-shadow: 18px 18px 0 0 color-mix(in oklab, var(--imf-ui-color-bg-brand) 22%, transparent);
+}
+
+/* Browser chrome around the screenshot, because opening a URL is the point. */
+.shot__chrome {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-inline: 16px;
+  border-bottom: 1px solid color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 12%, transparent);
+}
+.shot__dots {
+  display: flex;
+  gap: 7px;
+}
+.shot__dots i {
+  width: 10px;
+  height: 10px;
+  background: color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 20%, transparent);
+}
+.shot__url {
+  font-family: var(--imf-ui-font-family-mono);
+  font-size: 11.5px;
+  color: color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 45%, transparent);
+  padding: 3px 14px;
+  background: color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 8%, transparent);
+}
+.shot__img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.shot__caption {
+  display: block;
+  margin-top: 18px;
+}
+/* A second, full-width screenshot below a split: the frame is the same, only the
+   spacing above it belongs to the section rather than to a column. */
+.shot--wide {
+  margin: clamp(48px, 5vw, 76px) 0 0;
+}
+
+/* --------------------------------------------------------------- demo --- */
+
+/* Sits below the split it belongs to, at the same remove a full-width
+   screenshot takes in the workflow section. */
+.demo {
+  margin-top: clamp(56px, 6vw, 88px);
+}
+
+.demo__head {
+  margin-bottom: 32px;
+}
+
+/* The stage is ratio-locked, so filling the column gives the same figure on
+   every machine — 1156px wide and some 820px tall with its caption — which fits
+   a desktop screen and overruns a laptop one, where it then reads as oversized
+   rather than as cut off. Bounding the width by the height actually available
+   keeps the whole application in view; the subtrahend covers the fixed
+   navigation, the chrome bar, the caption and some air, and the floor stops a
+   very short window from shrinking the viewer below a usable size. */
+.demo__figure {
+  margin: 0 auto;
+  max-width: max(640px, calc((100svh - 190px) * 2880 / 1800));
+}
+
+/* Poster and iframe share this box, so pressing play swaps one for the other
+   without the page shifting under the pointer. The ratio is the poster's. */
+.demo__stage {
+  position: relative;
+  aspect-ratio: 2880 / 1800;
+}
+
+.demo__poster,
+.demo__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo__frame {
+  border: 0;
+  opacity: 0;
+  transition: opacity var(--imf-ui-duration-quick-2, 160ms) var(--ease, ease);
+}
+.demo__frame--ready {
+  opacity: 1;
+}
+
+.demo__launch {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  /* Dims the still so the call to action carries the contrast, and reads as a
+     cover over the app rather than as part of its interface. */
+  background: color-mix(in oklab, var(--band-ink) 62%, transparent);
+}
+
+.demo__launch--loading {
+  background: color-mix(in oklab, var(--band-ink) 78%, transparent);
+}
+
+.demo__weight {
+  font-family: var(--imf-ui-font-family-mono);
+  opacity: 0.72;
+}
+
+.demo__desktop-only {
+  display: none;
+  margin-top: 18px;
+}
+
+/* Several megabytes of WebAssembly and a WebGL volume renderer are a bad deal on
+   a phone, so the section keeps the poster and says so. */
+@media (max-width: 860px) {
+  .demo__launch {
+    display: none;
+  }
+  .demo__desktop-only {
+    display: block;
+  }
+}
+
+/* ---------------------------------------------------------------- cards --- */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.cards__cell {
+  min-width: 0;
+  display: flex;
+}
+.cards__cell--wide {
+  grid-column: span 2;
+}
+.cards__cell > .card {
+  width: 100%;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--imf-ui-duration-moderate-1) var(--ease),
+    border-color var(--imf-ui-duration-moderate-1) var(--ease);
+}
+.card::after {
+  /* One skewed plane bleeding out of the corner — the layer motif again. */
+  content: "";
+  position: absolute;
+  right: -140px;
+  bottom: -190px;
+  width: 340px;
+  height: 340px;
+  border: 1px solid var(--imf-ui-color-fg-brand);
+  transform: perspective(560px) rotateX(62deg) rotateZ(-26deg);
+  opacity: 0.13;
+  transition:
+    opacity var(--imf-ui-duration-moderate-2) var(--ease),
+    transform var(--imf-ui-duration-slow-1) var(--ease);
+  pointer-events: none;
+}
+.card:hover {
+  transform: translateY(-3px);
+}
+.card:hover::after {
+  opacity: 0.26;
+  transform: perspective(560px) rotateX(56deg) rotateZ(-18deg) scale(1.05);
+}
+.cards__cell--wide .card::after {
+  right: -110px;
+  bottom: -220px;
+  width: 420px;
+  height: 420px;
+}
+
+.card__idx {
+  display: block;
+  font-family: var(--imf-ui-font-family-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--imf-ui-color-fg-minor);
+  margin-bottom: 18px;
+}
+.card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.card--brand .card__idx {
+  color: color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 45%, transparent);
+}
+.card--brand .card__tag {
+  color: var(--imf-ui-color-fg-oncolor);
+  border-color: color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 40%, transparent);
+  background: color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 12%, transparent);
+}
+.card--brand::after {
+  border-color: var(--imf-ui-color-fg-oncolor);
+  opacity: 0.28;
+}
+.card--brand:hover::after {
+  opacity: 0.45;
+}
+
+/* -------------------------------------------------------------- templates --- */
+
+.tpl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tpl > li {
+  min-width: 0;
+  padding: 0 0 26px;
+  background: var(--imf-ui-color-bg-main);
+  border: 1px solid var(--imf-ui-color-bg-minor);
+}
+/* The captures are a dialog, panels and a model result, so their proportions differ.
+   A fixed tile with a contained image keeps the cards on one grid without
+   scaling any screenshot past its own resolution. */
+/* Flex, not grid: a grid row track grows to the image's own height, so a
+   percentage max-height would resolve against that instead of the tile and a
+   tall capture escaped the frame. */
+.tpl__shot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 290px;
+  padding: 22px;
+  background: var(--band-ink);
+  border-bottom: 1px solid var(--imf-ui-color-bg-minor);
+}
+.tpl__shot img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+.tpl__flag {
+  display: block;
+  margin: 22px 26px 10px;
+  font-family: var(--imf-ui-font-family-mono);
+  color: var(--imf-ui-color-fg-brand);
+}
+.tpl__title {
+  margin: 0 26px 8px;
+}
+.tpl > li > p {
+  margin-inline: 26px;
+}
+
+/* ------------------------------------------------------------ syntax --- */
+
+/* The library styles the tokeniser's `th-` classes through a seam of its own —
+   the `--imf-ui-color-code-*` variables — so the snippets are recoloured by
+   remapping that seam rather than by restating a highlighter theme. Numbers and
+   comments already arrive on the warning and minor foregrounds, so only these
+   three move: calls carry the status blue, and the brand blue stays reserved
+   for decorators. */
+:root {
+  --imf-ui-color-code-keyword: var(--imf-ui-color-fg-accent-3);
+  --imf-ui-color-code-string: var(--imf-ui-color-fg-accent-1);
+  --imf-ui-color-code-function: var(--imf-ui-color-fg-info);
+}
+
+/* Two classes the seam cannot reach on its own. A decorator is tagged `meta`,
+   which the library groups with variables and attributes — colouring the seam
+   would take those with it. A shell command word shares the keyword variable,
+   and here it reads as the thing being called rather than as syntax. */
+.th-meta {
+  color: var(--imf-ui-color-fg-brand);
+}
+.th-command {
+  color: var(--imf-ui-color-fg-info);
+}
+
+/* The ink bands re-declare the surface tokens but not these, so their light
+   foregrounds would sit on a dark block. Lift each one to the dark-scheme luma
+   the library already defines for it. */
+.hero,
+.section--dark {
+  --imf-ui-color-fg-accent-1: oklch(
+    var(--imf-ui-color-accent-1-fg-luma-dark) var(--imf-ui-color-accent-1-chroma)
+      var(--imf-ui-color-accent-1-hue)
+  );
+  --imf-ui-color-fg-accent-3: oklch(
+    var(--imf-ui-color-accent-3-fg-luma-dark) var(--imf-ui-color-accent-3-chroma)
+      var(--imf-ui-color-accent-3-hue)
+  );
+  --imf-ui-color-fg-info: oklch(
+    var(--imf-ui-color-status-fg-luma-dark) var(--imf-ui-color-status-chroma)
+      var(--imf-ui-color-status-info-hue)
+  );
+  --imf-ui-color-fg-warning: oklch(
+    var(--imf-ui-color-status-fg-luma-dark) var(--imf-ui-color-status-chroma)
+      var(--imf-ui-color-status-warning-hue)
+  );
+}
+
+/* ----------------------------------------------------------- quickstart --- */
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.steps > li {
+  min-width: 0;
+  padding: 30px 26px 26px;
+  background: var(--imf-ui-color-bg-support);
+  border: 1px solid var(--imf-ui-color-bg-minor);
+  display: flex;
+  flex-direction: column;
+}
+.steps__n {
+  display: block;
+  font-family: var(--imf-ui-font-family-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--imf-ui-color-fg-brand);
+  margin-bottom: 20px;
+}
+.steps__title {
+  margin-bottom: 10px;
+}
+.steps--pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.steps__alt {
+  display: block;
+  margin: 14px 0 6px;
+}
+.steps > li > :last-child {
+  margin-top: auto;
+}
+/* Two tall cards read better when each one flows top to bottom; pushing the
+   last element down only opens a hole in whichever card has less to say. */
+.steps--pair > li > :last-child {
+  margin-top: 0;
+}
+.steps__writes {
+  margin: 0 0 22px;
+}
+.steps__writes li {
+  color: var(--imf-ui-color-fg-support);
+}
+.steps__alt a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.landing-code-block {
+  position: relative;
+}
+.landing-code-block__copy {
+  position: absolute;
+  z-index: 1;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0;
+}
+/* These columns are narrower than the commands they hold, and the library's
+   code block scrolls rather than wraps — which hides the tail of a command on a
+   page nobody will think to scroll sideways. */
+.steps__code pre {
+  white-space: pre-wrap;
+}
+
+/* ------------------------------------------------------------------ cta --- */
+
+/* A closing band rather than a full call to action: one line and two links, on
+   the theory that a prototyping library does not need to be sold twice. */
+.cta {
+  position: relative;
+  background: var(--imf-ui-color-bg-brand);
+  padding: clamp(44px, 5.5vw, 72px) 0;
+}
+/* The motif bookends the page: it opens on the right of the hero and closes on
+   the right of this band. Strokes are drawn in the on-colour ink because the
+   ground here is the brand blue rather than the dark one. */
+.cta__field {
+  position: absolute;
+  top: 50%;
+  right: -16vw;
+  width: clamp(520px, 52vw, 860px);
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  z-index: 0;
+  opacity: 0.56;
+  --layer-stroke: color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 38%, transparent);
+  --layer-fill: color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 2%, transparent);
+}
+/* Centred rather than split left/right: the pitch and three buttons together are
+   wider than the container, so the row wrapped anyway and left a lopsided gap. */
+.cta__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 26px;
+}
+.cta__lead {
+  max-width: 52ch;
+  margin: 0;
+}
+/* Each wrapped line of buttons stays centred with the text above it. */
+.cta__buttons {
+  justify-content: center;
+}
+/* Fine print, so it takes the whole width below the pitch and its buttons rather
+   than becoming a third column in that row. */
+.cta__terms {
+  align-self: stretch;
+  max-width: 84ch;
+  margin: 0 auto;
+  padding-top: 22px;
+  border-top: 1px solid color-mix(in oklab, var(--imf-ui-color-fg-oncolor) 26%, transparent);
+  opacity: 0.82;
+}
+.cta__terms a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* --------------------------------------------------------------- footer --- */
+
+/* One row rather than a column directory: the page is short enough that the
+   footer only has to close it and repeat the two or three links that matter. */
+.foot__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px 40px;
+  flex-wrap: wrap;
+  padding: 34px 0;
+}
+.foot__legal {
+  font-family: var(--imf-ui-font-family-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--imf-ui-color-fg-minor);
+}
+
+/* -------------------------------------------------------------- reveals --- */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity var(--imf-ui-duration-slow-2) var(--ease),
+    transform var(--imf-ui-duration-slow-2) var(--ease);
+}
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ----------------------------------------------------------- responsive --- */
+
+@media (max-width: 1080px) {
+  .cards,
+  .steps,
+  .tpl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* Five cards over two columns: letting the first one stay wide puts the rest
+     out of step and leaves a hole beside the fourth, so only the odd last card
+     spans here. */
+  .cards__cell--wide {
+    grid-column: span 1;
+  }
+  .cards__cell:last-child {
+    grid-column: span 2;
+  }
+}
+
+/* The nav runs out of room well before the rest of the layout does, and it
+   sheds its contents in order of how easily they are found elsewhere. First
+   the section links, which need about 1030px beside the wordmark and the
+   three controls. */
+@media (max-width: 1040px) {
+  .nav__links {
+    display: none;
+  }
+  .nav__cta {
+    margin-left: auto;
+  }
+}
+
+/* Then the wordmark, the documentation link and the GitHub label, leaving the
+   mark and three compact controls. All three are repeated in the footer. */
+@media (max-width: 700px) {
+  .brand__text,
+  .nav__docs,
+  .nav__label {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --gutter: 22px;
+  }
+  .split,
+  .split--reverse {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .split--reverse .split__intro,
+  .split--reverse .split__code {
+    order: initial;
+  }
+  /* One column: the screenshot follows the copy instead of sitting beside it,
+     and stops bleeding because there is no gutter left to bleed into. */
+  .hero__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+  .hero__shot {
+    margin-right: 0;
+  }
+  .hero__field {
+    width: 130vw;
+    left: -40%;
+  }
+  .shot__frame {
+    box-shadow: 10px 10px 0 0 color-mix(in oklab, var(--imf-ui-color-bg-brand) 22%, transparent);
+  }
+  .section__head {
+    margin-bottom: 44px;
+  }
+}
+
+@media (max-width: 620px) {
+  .cards,
+  .steps,
+  .steps--pair,
+  .tpl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cards__cell--wide,
+  .cards__cell:last-child {
+    grid-column: span 1;
+  }
+  /* At this width every snippet is wider than the column, and the library's
+     code block scrolls rather than wraps. Sideways scroll inside a page that
+     already scrolls vertically hides the tail of a line for good, so let the
+     snippets wrap here even though wrapped Python reads less cleanly. */
+  .split__code pre {
+    white-space: pre-wrap;
+  }
+  .foot__inner {
+    gap: 40px;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero__title {
+    font-size: 36px;
+  }
+  .steps > li {
+    padding-inline: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

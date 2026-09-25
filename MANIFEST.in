@@ -1,0 +1,17 @@
+include README.md
+include LICENSE
+include imfusion_webappkit/static/package.json
+include imfusion_webappkit/static/package-lock.json
+include imfusion_webappkit/static/tsconfig.json
+include imfusion_webappkit/static/vite.config.js
+recursive-include imfusion_webappkit/static/src *.ts *.tsx
+recursive-include imfusion_webappkit/static/assets *
+recursive-include imfusion_webappkit/static/dist *
+recursive-include imfusion_webappkit/examples *.py
+include imfusion_webappkit/examples/sample_image.nii.gz
+include imfusion_webappkit/examples/sample_image_thumbnail.png
+recursive-include imfusion_webappkit/templates *
+
+
+
+

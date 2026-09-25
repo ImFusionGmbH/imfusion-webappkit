@@ -1,0 +1,73 @@
+name: Release
+
+# Publishes to PyPI through trusted publishing: PyPI is configured to trust
+# this repository's `publish` job in the `pypi` environment, so there is no API
+# token anywhere. See docs/development.md for the one-time setup.
+
+# Publishing a GitHub release is the trigger, rather than a tag push. The
+# release form creates its tag inside the repository, on a commit that is
+# already there, so no tag ever has to be pushed from a clone whose history the
+# public repository does not share. A manual run is a dry run: it builds and
+# checks the distributions without publishing them.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build the distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # setup-uv no longer publishes moving major tags, so this pin is exact.
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      # A release whose tag disagrees with pyproject.toml would publish a
+      # version nobody can find from the repository, and PyPI never lets that
+      # number be reused.
+      - name: Check the release tag matches the project version
+        if: github.event_name == 'release'
+        run: |
+          version=$(uv run --no-project python -c \
+            "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          test "v$version" = "${{ github.event.release.tag_name }}"
+
+      - name: Build the wheel and the source distribution
+        run: uv build
+
+      - name: Check the distribution metadata
+        run: uvx twine check dist/*
+
+      - name: Check the bundled assets
+        run: uv run --no-project python .github/scripts/check_package.py
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: distributions
+          path: dist/
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    # Only a published release uploads anything. Without this guard a manual
+    # run would skip the version check above and publish whatever
+    # pyproject.toml happens to say — a number PyPI then refuses to reuse, even
+    # after a deletion.
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: distributions
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

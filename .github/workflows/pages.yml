@@ -1,0 +1,87 @@
+name: Pages
+
+# GitHub Pages serves a single site per repository, so both published pages
+# share one deployment: the landing page at the root and the documentation
+# under `docs/`. landing/src/content.ts links to the same split.
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and never cancel one halfway: an interrupted
+# publish leaves the live site on the previous commit's files.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/configure-pages@v6
+        id: pages
+
+      # setup-uv no longer publishes moving major tags, so this pin is exact.
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      # mkdocstrings reads the package's source rather than importing it, so
+      # documenting the API needs neither the SDK nor a license.
+      - name: Install the documentation tools
+        run: uv sync --locked --only-group dev
+
+      # mkdocs empties its site directory, so the documentation is built first
+      # and the landing page copied over the top of it.
+      - name: Build the documentation
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}/docs/
+        run: uv run --no-sync mkdocs build --site-dir _site/docs
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: landing/package-lock.json
+
+      - name: Install the landing page dependencies
+        run: npm ci
+        working-directory: landing
+
+      # Point the page at whatever repository and Pages site it is being built
+      # for, so a deployment from a fork or a renamed repository links to
+      # itself rather than to the canonical one.
+      - name: Build the landing page
+        env:
+          WEBAPPKIT_REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          WEBAPPKIT_DOCS_URL: ${{ steps.pages.outputs.base_url }}/docs
+        run: npm run build
+        working-directory: landing
+
+      - name: Assemble the site
+        run: cp -R landing/dist/. _site/
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy to Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

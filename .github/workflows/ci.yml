@@ -1,0 +1,142 @@
+name: CI
+
+# Trimmed for the private-repo trial. Actions minutes are metered until the
+# repository is public, and a full run costs roughly fifty of them across the
+# matrix, so this runs on request only and on one Python version. Reverting
+# this commit restores the push and pull request triggers and 3.10 to 3.13.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  format:
+    name: Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # setup-uv no longer publishes moving major tags, so this pin is exact.
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          enable-cache: true
+          python-version: "3.12"
+      # Only the formatter is needed, not the SDK underneath the project.
+      - name: Install the formatter
+        run: uv sync --locked --only-group dev
+      - name: Check the formatting
+        run: uv run --no-sync black --check .
+
+  tests:
+    name: Tests on Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12"]
+    env:
+      # The SDK reads its license from the environment. The secret is unset on
+      # forks and on a repository that has not been given one; tests/conftest.py
+      # skips what cannot run then, and the flag below turns those skips back
+      # into failures wherever a license is supposed to be present.
+      IMFUSION_LICENSE_KEY: ${{ secrets.IMFUSION_LICENSE_KEY }}
+      IMFUSION_WEBAPPKIT_REQUIRE_LICENSE: ${{ secrets.IMFUSION_LICENSE_KEY != '' && '1' || '' }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # The SDK creates an OpenGL context when it initializes, and the viewer
+      # renders through a software rasteriser, so a runner with no GPU still
+      # needs the GL libraries and a display for them to talk to.
+      - name: Install the OpenGL and X11 runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libegl1 libgl1 libglu1-mesa libglx-mesa0 libopengl0 \
+            libdbus-1-3 libfontconfig1 libice6 libsm6 libxkbcommon0 \
+            xvfb
+
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      # A few tests drive a real browser and skip themselves when it is absent.
+      - name: Install the Playwright browser
+        run: uv run playwright install --with-deps chromium
+
+      - name: Run the test suite
+        run: xvfb-run -a --server-args="-screen 0 1920x1080x24" uv run pytest -ra
+
+      # The SDK loads each feature as a plugin and carries on when one will not
+      # load, so a missing system library shows up only as an absent attribute.
+      # This reports what the framework found and which shared objects the
+      # plugins cannot resolve, which is otherwise guesswork from a test name.
+      - name: Diagnose the SDK plugins
+        if: failure()
+        run: |
+          xvfb-run -a uv run python - <<'PY'
+          import importlib, traceback
+          import imfusion
+
+          print("version:", getattr(imfusion, "__version__", "unknown"))
+          print("info   :", imfusion.info())
+          for feature in ("dicom", "registration"):
+              present = hasattr(imfusion, feature)
+              print(f"\n=== imfusion.{feature}: attribute {'present' if present else 'ABSENT'}")
+              try:
+                  importlib.import_module(f"imfusion.{feature}")
+                  print("    import succeeded")
+              except Exception:
+                  traceback.print_exc()
+          PY
+          echo "=== unresolved shared objects in the SDK libraries"
+          for so in $(find .venv -name '*.so*' -path '*mfusion*'); do
+            missing=$(ldd "$so" 2>/dev/null | grep 'not found' || true)
+            if [ -n "$missing" ]; then echo "--- $so"; echo "$missing"; fi
+          done
+
+  client:
+    name: Browser client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: imfusion_webappkit/static/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+        working-directory: imfusion_webappkit/static
+      - name: Run the client tests
+        run: npm test
+        working-directory: imfusion_webappkit/static
+      # Type-checks and bundles. The result is discarded: the bundle committed
+      # under static/dist is what ships, and rebuilding here only proves it can
+      # still be rebuilt.
+      - name: Build the client
+        run: npm run build
+        working-directory: imfusion_webappkit/static
+
+  package:
+    name: Distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          enable-cache: true
+          python-version: "3.12"
+      - name: Build the wheel and the source distribution
+        run: uv build
+      - name: Check the distribution metadata
+        run: uvx twine check dist/*
+      - name: Check the bundled assets
+        run: uv run --no-project python .github/scripts/check_package.py

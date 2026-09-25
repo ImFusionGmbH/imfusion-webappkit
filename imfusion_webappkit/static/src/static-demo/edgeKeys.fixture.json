@@ -1,0 +1,163 @@
+[
+  {
+    "name": "roles are sorted and integral floats lose their point",
+    "type": "execute_action",
+    "data": {
+      "action": "Blend",
+      "inputs": [
+        {
+          "role": "moving",
+          "index": 1
+        },
+        {
+          "role": "fixed",
+          "index": 0
+        }
+      ],
+      "parameters": {
+        "weight": 0.5,
+        "radius": 3.0
+      }
+    },
+    "app_only": [],
+    "key": "{\"data\":{\"action\":\"Blend\",\"inputs\":[{\"index\":0,\"role\":\"fixed\"},{\"index\":1,\"role\":\"moving\"}],\"parameters\":{\"radius\":3,\"weight\":0.5}},\"type\":\"execute_action\"}"
+  },
+  {
+    "name": "a bare selection becomes positional roles",
+    "type": "execute_action",
+    "data": {
+      "action": "Threshold",
+      "indices": [
+        2,
+        0
+      ]
+    },
+    "app_only": [],
+    "key": "{\"data\":{\"action\":\"Threshold\",\"inputs\":[{\"index\":2,\"role\":\"0\"},{\"index\":0,\"role\":\"1\"}]},\"type\":\"execute_action\"}"
+  },
+  {
+    "name": "an app-only action drops the inputs the client attached",
+    "type": "execute_action",
+    "data": {
+      "action": "Reset",
+      "inputs": [
+        {
+          "role": "image",
+          "index": 0
+        }
+      ]
+    },
+    "app_only": [
+      "Reset"
+    ],
+    "key": "{\"data\":{\"action\":\"Reset\"},\"type\":\"execute_action\"}"
+  },
+  {
+    "name": "empty parameters are left out entirely",
+    "type": "execute_action",
+    "data": {
+      "action": "Invert",
+      "inputs": [
+        {
+          "role": "image",
+          "index": 0
+        }
+      ],
+      "parameters": {}
+    },
+    "app_only": [],
+    "key": "{\"data\":{\"action\":\"Invert\",\"inputs\":[{\"index\":0,\"role\":\"image\"}]},\"type\":\"execute_action\"}"
+  },
+  {
+    "name": "parameter keys are sorted at every depth",
+    "type": "execute_action",
+    "data": {
+      "action": "Filter",
+      "inputs": [
+        {
+          "role": "image",
+          "index": 0
+        }
+      ],
+      "parameters": {
+        "z": 1,
+        "a": {
+          "nested": true,
+          "also": null
+        },
+        "text": "Grosse Näherung"
+      }
+    },
+    "app_only": [],
+    "key": "{\"data\":{\"action\":\"Filter\",\"inputs\":[{\"index\":0,\"role\":\"image\"}],\"parameters\":{\"a\":{\"also\":null,\"nested\":true},\"text\":\"Grosse Näherung\",\"z\":1}},\"type\":\"execute_action\"}"
+  },
+  {
+    "name": "fields the server ignores do not reach the key",
+    "type": "execute_action",
+    "data": {
+      "action": "Invert",
+      "inputs": [
+        {
+          "role": "image",
+          "index": 0
+        }
+      ],
+      "request_id": "abc",
+      "label": "Invert"
+    },
+    "app_only": [],
+    "key": "{\"data\":{\"action\":\"Invert\",\"inputs\":[{\"index\":0,\"role\":\"image\"}]},\"type\":\"execute_action\"}"
+  },
+  {
+    "name": "next carries nothing",
+    "type": "workflow_next",
+    "data": {},
+    "app_only": [],
+    "key": "{\"data\":{},\"type\":\"workflow_next\"}"
+  },
+  {
+    "name": "back carries nothing",
+    "type": "workflow_back",
+    "data": {},
+    "app_only": [],
+    "key": "{\"data\":{},\"type\":\"workflow_back\"}"
+  },
+  {
+    "name": "run without an action",
+    "type": "workflow_run",
+    "data": {},
+    "app_only": [],
+    "key": "{\"data\":{},\"type\":\"workflow_run\"}"
+  },
+  {
+    "name": "run with a named action",
+    "type": "workflow_run",
+    "data": {
+      "action": "export"
+    },
+    "app_only": [],
+    "key": "{\"data\":{\"action\":\"export\"},\"type\":\"workflow_run\"}"
+  },
+  {
+    "name": "step data keeps its payload and sorts it",
+    "type": "workflow_step_data",
+    "data": {
+      "data": {
+        "parameters": {
+          "sigma": 2.0,
+          "iterations": 4
+        },
+        "accepted": true
+      }
+    },
+    "app_only": [],
+    "key": "{\"data\":{\"data\":{\"accepted\":true,\"parameters\":{\"iterations\":4,\"sigma\":2}}},\"type\":\"workflow_step_data\"}"
+  },
+  {
+    "name": "step data with no payload",
+    "type": "workflow_step_data",
+    "data": {},
+    "app_only": [],
+    "key": "{\"data\":{\"data\":{}},\"type\":\"workflow_step_data\"}"
+  }
+]

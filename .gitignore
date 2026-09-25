@@ -1,0 +1,91 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+# Anchored: an unanchored `dist/` also matches the client bundle under
+# imfusion_webappkit/static/dist, which has to be committed because the wheel
+# ships it and people installing with pip have no Node toolchain to build it.
+# The landing page's own dist stays ignored through landing/.gitignore.
+/dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+# .vscode/ - keeping launch configs
+.vscode/settings.json
+.vscode/README.md
+.idea/
+*.swp
+*.swo
+*~
+
+# Node modules
+node_modules/
+package-lock.json
+imfusion_webappkit/static/node_modules/
+imfusion_webappkit/static/.vite/
+!imfusion_webappkit/static/package-lock.json
+!landing/package-lock.json
+
+# Packed npm tarballs. The @imfusion packages install from the public registry,
+# so a tarball sitting here is a local experiment, and committing one would
+# republish a licensed package to anyone who clones the repository.
+*.tgz
+
+# Documentation build output
+site/
+
+# Intermediate screenshot captures for landing assets. Documentation keeps
+# its own single-density copies under docs/assets/screenshots.
+shots2x/
+
+# Intermediate client bundle for the static demo. The assembled demo itself is
+# committed under landing/public/demo: recording its fixtures needs the licensed
+# ImFusion SDK, so a CI runner can rebuild the landing page but never the demo.
+imfusion_webappkit/static/dist-demo/
+
+# Generated and local reference material. The Web SDK and viewer checkouts are
+# private ImFusion repositories, so they are obtained separately rather than
+# wired in as submodules; .gitmodules is kept locally for whoever has access.
+# Root agent guidance points at that local checkout, so it stays untracked too.
+.gitmodules
+/AGENTS.md
+references/python-sdk/
+references/imfusion-sdk/
+references/web-sdk/
+references/web-viewer/
+/imfusion_webappkit/examples/sample_image[0-9]*.nii.gz
+
+# Temporary scripts, at the repository root only
+/scripts/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+

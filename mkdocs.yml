@@ -1,0 +1,71 @@
+site_name: ImFusion WebAppKit
+site_description: Serve Python imaging algorithms in a medical web viewer over HTTP
+# The published site lives under the landing page, which occupies the root of
+# the repository's GitHub Pages site. The workflow passes the deployed base URL.
+site_url: !ENV [SITE_URL, "https://imfusiongmbh.github.io/imfusion-webappkit/docs/"]
+dev_addr: 127.0.0.1:8001
+use_directory_urls: false
+
+theme:
+  name: material
+  palette:
+    scheme: imfusion
+    primary: custom
+    accent: custom
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - content.code.copy
+    - search.suggest
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Command-line setup: cli.md
+  - User guide:
+      - Actions and algorithms: guides/actions-and-algorithms.md
+      - Data model synchronization: guides/data-model.md
+      - Guided workflows: guides/workflows.md
+      - User annotations: guides/annotations.md
+      - Branding, themes, and layout: guides/customization.md
+      - Recorded static demos: guides/static-demos.md
+  - API reference:
+      - Application: api/application.md
+      - Configuration: api/configuration.md
+      - Data and actions: api/data-and-actions.md
+      - Workflows: api/workflows.md
+  - Development: development.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            docstring_style: google
+            heading_level: 2
+            members_order: source
+            merge_init_into_class: true
+            separate_signature: true
+            show_root_full_path: false
+            show_root_heading: true
+            show_signature: true
+            show_source: false
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+
+strict: true

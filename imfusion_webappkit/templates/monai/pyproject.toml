@@ -1,0 +1,26 @@
+[project]
+name = "{{PROJECT_NAME}}"
+version = "0.1.0"
+description = "Direct MONAI inference WebAppKit demo"
+requires-python = ">=3.10"
+dependencies = [
+    "huggingface-hub>=0.24",
+    "imfusion-webappkit>=0.3.0",
+    "monai>=1.4,<2",
+    "nibabel>=5.2",
+    "numpy>=1.24",
+    "torch>=2.4",
+]
+
+[tool.uv]
+prerelease = "allow"
+
+[[tool.uv.index]]
+name = "imfusion"
+url = "https://pypi.imfusion.com/simple"
+
+[tool.uv.sources]
+# {{WEBAPPKIT_SOURCE_LINE}}
+imfusion-sdk = { index = "imfusion" }
+imfusion-sdk-dicom = { index = "imfusion" }
+imfusion-sdk-registration = { index = "imfusion" }

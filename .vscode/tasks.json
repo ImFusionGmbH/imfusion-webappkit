@@ -1,0 +1,66 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Client",
+            "type": "shell",
+            "command": "npm",
+            "args": ["run", "build"],
+            "options": {
+                "cwd": "${workspaceFolder}/imfusion_webappkit/static"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Landing",
+            "type": "shell",
+            "command": "npm",
+            "args": ["run", "build"],
+            "options": {
+                "cwd": "${workspaceFolder}/landing"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            // Rebuilds the client itself (with a relative base), so this does not
+            // need "Build Client" ahead of it. Add --poster to re-shoot the still
+            // the landing page shows before the demo is launched.
+            "label": "Build Static Demo",
+            "type": "shell",
+            "command": "uv",
+            "args": ["run", "python", "tools/build_static_demo.py"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            // The demo has to exist in landing/public before Vite copies it into
+            // landing/dist, so the order here is not incidental.
+            "label": "Build Landing With Demo",
+            "dependsOrder": "sequence",
+            "dependsOn": ["Build Static Demo", "Build Landing"],
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
+}
+
+
+
+

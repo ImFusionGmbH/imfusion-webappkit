@@ -1,0 +1,36 @@
+{
+  "name": "imfusion-webappkit-client",
+  "version": "0.3.0",
+  "description": "Client-side files for ImFusion WebAppKit",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@imfusion/sdk": "1.1.0",
+    "@imfusion/sdk-react": "1.1.0",
+    "@imfusion/web-ui": "0.6.4-dev.10.gefecdbe5",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-markdown": "^10.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "typescript": "^5.9.2",
+    "vite": "^6.0.6",
+    "vitest": "^4.1.11"
+  },
+  "keywords": [
+    "imfusion",
+    "medical-imaging",
+    "websdk"
+  ]
+}

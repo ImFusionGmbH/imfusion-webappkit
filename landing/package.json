@@ -1,0 +1,29 @@
+{
+  "name": "imfusion-webappkit-landing",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Marketing page for ImFusion WebAppKit, built on @imfusion/web-ui",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:demo": "uv run --project .. python ../tools/build_static_demo.py",
+    "preview": "vite preview --port 4173",
+    "check:highlight": "node scripts/check-highlight.mjs"
+  },
+  "dependencies": {
+    "@imfusion/web-ui": "0.5.1-dev.45.gf3889fa8",
+    "@tanstack/highlight": "0.0.9",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.5",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "4.3.4",
+    "esbuild": "0.25.12",
+    "typescript": "5.7.3",
+    "vite": "6.4.3"
+  }
+}

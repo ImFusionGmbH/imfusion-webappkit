@@ -1,0 +1,22 @@
+[project]
+name = "{{PROJECT_NAME}}"
+version = "0.1.0"
+description = "Guided medical-imaging algorithm demo"
+requires-python = ">=3.10"
+dependencies = [
+    "imfusion-webappkit>=0.3.0",
+    "numpy>=1.24",
+]
+
+[tool.uv]
+prerelease = "allow"
+
+[[tool.uv.index]]
+name = "imfusion"
+url = "https://pypi.imfusion.com/simple"
+
+[tool.uv.sources]
+# {{WEBAPPKIT_SOURCE_LINE}}
+imfusion-sdk = { index = "imfusion" }
+imfusion-sdk-dicom = { index = "imfusion" }
+imfusion-sdk-registration = { index = "imfusion" }

@@ -1,0 +1,160 @@
+{
+  "protocol_version": 7,
+  "notice": "This page is a recording. The application normally talks to a Python process, and there is none behind this page, so anything that needs one has no answer here. Everything else \u2014 viewing, layout, display, and Threshold \u2014 is running in your browser.",
+  "config": {
+    "protocol_version": 7,
+    "title": "Image Tools",
+    "branding": {
+      "logo_url": "./branding/logo.svg",
+      "favicon_url": "./branding/favicon.svg",
+      "landing_page_title": null,
+      "landing_page_message": null
+    },
+    "info": {
+      "content": "This is the ImFusion WebAppKit client running with no server behind it. Viewing, layout and display controls work because rendering happens in your browser, and **Threshold** runs here too, through the same WebAssembly SDK.\n\n- [Documentation](https://imfusiongmbh.github.io/imfusion-webappkit)\n- [Source](https://github.com/ImFusionGmbH/imfusion-webappkit)\n",
+      "title": "About this demo",
+      "button_label": "About"
+    },
+    "theme": {
+      "preset": "dark",
+      "primary": null,
+      "primary_hover": null,
+      "secondary": null,
+      "background": null,
+      "surface": null,
+      "surface_raised": null,
+      "surface_high": null,
+      "text": null,
+      "text_muted": null,
+      "text_subtle": null,
+      "on_primary": null,
+      "border": null,
+      "success": null,
+      "danger": null,
+      "warning": null,
+      "info": null,
+      "font_family": null
+    },
+    "layout": {
+      "header_title_position": "left",
+      "header_logo_position": "left",
+      "sidebar_position": "left",
+      "sidebar_width": 300,
+      "sidebar_resizable": true,
+      "workflow_panel_position": "left",
+      "workflow_panel_width": 320,
+      "workflow_panel_resizable": true,
+      "show_status_bar": true,
+      "initial_view_layout": "Auto",
+      "initial_visible_views": [
+        "mpr",
+        "3d"
+      ]
+    },
+    "sidebar": {
+      "show_datamodel": true,
+      "show_views": true,
+      "show_display_options": true,
+      "show_annotations": false,
+      "collapsed": false
+    },
+    "algorithms_enabled": false,
+    "algorithms_placement": "sidebar",
+    "algorithm_controllers": [],
+    "show_load_button": false,
+    "show_export_button": false,
+    "export_formats": [
+      "imf",
+      "nii.gz",
+      "dicom"
+    ],
+    "workflow_enabled": false,
+    "sample_datasets": []
+  },
+  "actions": [
+    {
+      "name": "Threshold",
+      "is_app_only": false,
+      "inputs": [
+        {
+          "key": "image",
+          "label": "Image",
+          "required": true
+        }
+      ],
+      "parameters": {
+        "threshold": {
+          "name": "threshold",
+          "type": "float",
+          "label": "Threshold",
+          "value": 100.0,
+          "default": 100.0,
+          "min": 0.0,
+          "max": 1000.0,
+          "step": 1.0
+        }
+      },
+      "handler": "threshold"
+    }
+  ],
+  "handlers": {
+    "Threshold": "threshold"
+  },
+  "initial_node": "n0",
+  "connect": [
+    {
+      "type": "actions",
+      "data": {
+        "actions": [
+          {
+            "name": "Threshold",
+            "is_app_only": false,
+            "inputs": [
+              {
+                "key": "image",
+                "label": "Image",
+                "required": true
+              }
+            ],
+            "parameters": {
+              "threshold": {
+                "name": "threshold",
+                "type": "float",
+                "label": "Threshold",
+                "value": 100.0,
+                "default": 100.0,
+                "min": 0.0,
+                "max": 1000.0,
+                "step": 1.0
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "data_add",
+      "data": {
+        "format": "imf",
+        "name": "Sample Image",
+        "index": 0
+      },
+      "payload": "4dea9324a0e6c8ccb526789d4000ad0ebe8e8883a1dee78b3766035dc42bb468"
+    },
+    {
+      "type": "initial_sync_complete",
+      "data": {
+        "count": 1
+      }
+    }
+  ],
+  "nodes": {
+    "n0": {
+      "id": "n0",
+      "selection": [
+        0
+      ],
+      "edges": {}
+    }
+  }
+}

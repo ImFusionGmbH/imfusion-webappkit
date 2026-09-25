@@ -1,0 +1,135 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: ImFusion WebApp Demo (with build)",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+            "program": "${workspaceFolder}/imfusion_webappkit/examples/webapp_demo.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "preLaunchTask": "Build Client",
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        {
+            "name": "Python: ImFusion WebApp Demo (no build)",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+            "program": "${workspaceFolder}/imfusion_webappkit/examples/webapp_demo.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        {
+            "name": "Python: WebApp With Workflow Demo",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+            "program": "${workspaceFolder}/imfusion_webappkit/examples/workflow_demo.py",
+            "console": "integratedTerminal",
+            "preLaunchTask": "Build Client",
+            "justMyCode": true,
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        }
+        ,
+        {
+            "name": "Python: Registration Demo",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+            "program": "${workspaceFolder}/imfusion_webappkit/examples/registration_demo.py",
+            "console": "integratedTerminal",
+            "preLaunchTask": "Build Client",
+            "justMyCode": true,
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        }
+        ,
+        {
+            "name": "Python: Annotation Demo",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+            "program": "${workspaceFolder}/imfusion_webappkit/examples/annotation_demo.py",
+            "console": "integratedTerminal",
+            "preLaunchTask": "Build Client",
+            "justMyCode": true,
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        {
+            "name": "Python: Annotation Workflow Demo",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+            "program": "${workspaceFolder}/imfusion_webappkit/examples/annotation_workflow_demo.py",
+            "console": "integratedTerminal",
+            "preLaunchTask": "Build Client",
+            "justMyCode": true,
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        {
+            "name": "Python: Registration Workflow Demo",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+            "program": "${workspaceFolder}/imfusion_webappkit/examples/registration_workflow_demo.py",
+            "console": "integratedTerminal",
+            "preLaunchTask": "Build Client",
+            "justMyCode": true,
+            "env": {
+                "PYTHONUNBUFFERED": "1"
+            }
+        },
+        {
+            // Vite HMR for landing/src. Caption and layout copy update on save.
+            // The iframe still serves landing/public/demo as-is.
+            "name": "Landing page (build and preview)",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "dev"],
+            "cwd": "${workspaceFolder}/landing",
+            "console": "integratedTerminal",
+            "serverReadyAction": {
+                "pattern": "Local:\\s+(https?://\\S+)",
+                "uriFormat": "%s",
+                "action": "openExternally"
+            }
+        },
+        {
+            // Rebuilds the recorded demo into landing/public/demo, then the Vite
+            // dev server, which serves that folder as /demo. The landing page
+            // itself hot-reloads; re-run this if the iframe app changed.
+            "name": "Landing page with demo (build all and preview)",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "dev"],
+            "cwd": "${workspaceFolder}/landing",
+            "preLaunchTask": "Build Static Demo",
+            "console": "integratedTerminal",
+            "serverReadyAction": {
+                "pattern": "Local:\\s+(https?://\\S+)",
+                "uriFormat": "%s",
+                "action": "openExternally"
+            }
+        }
+    ]
+}
+
+
+
+

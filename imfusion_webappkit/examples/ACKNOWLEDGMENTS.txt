@@ -1,0 +1,10 @@
+# sample_image.nii.gz
+
+The image comes from the following dataset:
+Roth, H., Lu, L., Seff, A., Cherry, K. M., Hoffman, J., Wang, S., Liu, J., Turkbey, E., & Summers, R. M. (2015). A new 2.5 D representation for lymph node detection in CT [Data set]. The Cancer Imaging Archive. https://doi.org/10.7937/K9/TCIA.2015.AQIIDCNM
+It has been cropped and resampled to reduce its size
+
+# brain_reg.imf
+
+These images come from the following dataset:
+McNabb CB, et al., The Welsh Advanced Neuroimaging Database: an open-source state-of-the-art resource for brain research, Proceedings of the International Society for Magnetic Resonance in Medicine (ISMRM), 2024

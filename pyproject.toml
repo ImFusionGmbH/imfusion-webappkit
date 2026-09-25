@@ -1,0 +1,106 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "imfusion-webappkit"
+version = "0.3.0"
+description = "Toolkit for building browser-based ImFusion applications in Python"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "ImFusion GmbH", email = "info@imfusion.com" },
+]
+keywords = ["medical-imaging", "imfusion", "websdk", "fastapi", "websocket"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Healthcare Industry",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "websockets>=12.0",
+    "numpy>=1.24.0",
+    "imfusion-sdk==0.12.0",
+    "imfusion-sdk-dicom==0.12.0",
+    "imfusion-sdk-registration==0.12.0",
+]
+
+[project.scripts]
+imfusion-webappkit = "imfusion_webappkit.cli:main"
+
+[dependency-groups]
+dev = [
+    "black>=24.0",
+    "mkdocs-material>=9.7.7",
+    "mkdocstrings[python]>=1.0.6",
+    "pillow>=11.0",
+    "playwright>=1.62.0",
+    "pytest>=8.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["imfusion_webappkit*"]
+exclude = [
+    "imfusion_webappkit.templates",
+    "imfusion_webappkit.templates.*",
+]
+
+[tool.setuptools]
+# The starter templates are data, not code: their app.py files carry
+# {{PLACEHOLDER}} markers and only become valid Python once `webappkit init`
+# renders them. Including package data from the manifest would make setuptools
+# treat every template directory as an undeclared package, so the wheel is
+# filled from the explicit globs below instead.
+include-package-data = false
+
+[tool.setuptools.package-data]
+imfusion_webappkit = [
+    "static/*.html",
+    "static/*.js",
+    "static/*.css",
+    "static/*.json",
+    "static/assets/**/*",
+    "static/src/**/*.ts",
+    "static/src/**/*.tsx",
+    "static/dist/*.html",
+    "static/dist/**/*",
+    "examples/sample_image.nii.gz",
+    "examples/sample_image_thumbnail.png",
+    "templates/*/*.py",
+    "templates/*/*.toml",
+    "templates/*/*.md",
+    "templates/*/.cursor/skills/*/*.md",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers"
+
+[tool.black]
+# Template sources carry placeholders and are rendered, not imported, so they
+# are not parseable Python until `webappkit init` writes them out.
+extend-exclude = "^/imfusion_webappkit/templates/"
+
+[tool.uv]
+prerelease = "allow"
+
+[[tool.uv.index]]
+name = "imfusion"
+url = "https://pypi.imfusion.com/simple"
+
+[tool.uv.sources]
+imfusion-sdk = { index = "imfusion" }
+imfusion-sdk-dicom = { index = "imfusion" }
+imfusion-sdk-registration = { index = "imfusion" }

@@ -1,0 +1,56 @@
+:root {
+  --imfusion-blue: #245eff;
+  --imfusion-white: #f9fdfe;
+  --imfusion-yellow: #e2f777;
+  --imfusion-sage: #c6ded2;
+  --imfusion-violet: #9365ff;
+  --imfusion-black: #06121d;
+  --imfusion-grey-05: #485357;
+  --imfusion-grey-03: #a8b8bd;
+  --imfusion-grey-01: #e4edf0;
+}
+
+[data-md-color-scheme="imfusion"] {
+  --md-primary-fg-color: var(--imfusion-blue);
+  --md-primary-fg-color--light: #547fff;
+  --md-primary-fg-color--dark: #1747cc;
+  --md-primary-bg-color: var(--imfusion-white);
+  --md-primary-bg-color--light: rgb(249 253 254 / 70%);
+
+  --md-accent-fg-color: var(--imfusion-violet);
+  --md-accent-fg-color--transparent: rgb(147 101 255 / 10%);
+  --md-accent-bg-color: var(--imfusion-white);
+
+  --md-default-fg-color: var(--imfusion-black);
+  --md-default-fg-color--light: var(--imfusion-grey-05);
+  --md-default-fg-color--lighter: var(--imfusion-grey-03);
+  --md-default-bg-color: var(--imfusion-white);
+
+  --md-code-fg-color: var(--imfusion-black);
+  --md-code-bg-color: var(--imfusion-grey-01);
+  --md-typeset-a-color: var(--imfusion-blue);
+}
+
+[data-md-color-scheme="imfusion"] .md-typeset a:hover:not(.md-button) {
+  color: var(--imfusion-violet);
+}
+
+[data-md-color-scheme="imfusion"] .md-typeset .md-button:focus,
+[data-md-color-scheme="imfusion"] .md-typeset .md-button:hover {
+  color: var(--imfusion-white);
+}
+
+[data-md-color-scheme="imfusion"] .md-typeset ::selection {
+  background-color: var(--imfusion-yellow);
+  color: var(--imfusion-black);
+}
+
+[data-md-color-scheme="imfusion"] .md-typeset .admonition,
+[data-md-color-scheme="imfusion"] .md-typeset details {
+  border-color: var(--imfusion-sage);
+}
+
+.md-typeset h2.doc-heading {
+  font-size: 1.25em;
+  font-weight: 600;
+}

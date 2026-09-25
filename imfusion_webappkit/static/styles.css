@@ -1,0 +1,3261 @@
+/* ImFusion WebAppKit - Styles */
+/* Based on the ImFusion Web Viewer design system and the ImFusion brand
+   identity. Brand values are used verbatim where the palette defines one:
+   Blue #245EFF as the single accent, and White #F9FDFE, Grey 01 #E4EDF0,
+   Grey 03 #A8B8BD, Grey 05 #485357 and Black #06121D across the themes.
+   The palette defines no intermediate dark steps, so the surfaces between
+   Black and Grey 05 are interpolated on Black's hue at low saturation. */
+
+/* ===========================================
+   CSS Variables (Design Tokens)
+   =========================================== */
+:root {
+  /* Brand colors */
+  --color-primary: #245eff;
+  --color-primary-hover: #4d7bff;
+  --color-secondary: #1e262e;
+
+  /* Text colors */
+  --text-primary: #e5e9ec;
+  --text-secondary: #9aa4ad;
+  --text-tertiary: #7c858e;
+  --text-on-primary: #ffffff;
+  --text-on-success: #06121d;
+  /* Accent text: the fill blue is too dark to read as type on a dark chrome. */
+  --text-accent: #8fadff;
+
+  /* Background colors — the deepest surface is ImFusion Black exactly. The
+     surfaces above it share its 210deg hue but drop to 17-26% saturation, so
+     they lift off the base as one family while still reading as grey: coloured
+     chrome around a greyscale viewport changes how the image data itself looks. */
+  --bg-primary: #06121d;
+  --bg-secondary: #141b22;
+  --bg-tertiary: #1e262e;
+  --bg-quaternary: #2b343d;
+
+  /* Border colors */
+  --border-color: #232b33;
+  --border-strong: #313b45;
+
+  /* Status colors */
+  --color-success: #58c98c;
+  --color-danger: #f2635c;
+  --color-warning: #e8bf62;
+  --color-info: #6ba4ff;
+  --success-color: #58c98c;
+  --error-color: #f2635c;
+
+  /* Accent colors */
+  --accent-color: #245eff;
+  --accent-color-hover: #4d7bff;
+  --accent-color-rgb: 36, 94, 255;
+  /* Accent washes, used for selected rows and hover surfaces. */
+  --accent-wash: rgba(36, 94, 255, 0.16);
+  --accent-wash-hover: rgba(36, 94, 255, 0.1);
+
+  /* Layout */
+  --header-height: 46px;
+  --sidebar-width: 320px;
+  --workflow-panel-width: 320px;
+  --status-bar-height: 28px;
+  --status-indicator-width: 168px;
+
+  /* Typography — a tool scale in px, not a document scale in rem, so panel
+     density does not drift with the browser's root font size. */
+  --font-family: 'Inter Tight', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-size-base: 13px;
+  --font-size-small: 12px;
+  --font-size-xs: 11px;
+  --font-size-micro: 10px;
+  --font-size-large: 15px;
+  --tracking-tight: -0.01em;
+  --tracking-label: 0.12em;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-pill: 999px;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 24px 64px -16px rgba(0, 0, 0, 0.65);
+
+  /* Focus */
+  --focus-ring: 0 0 0 2px var(--bg-secondary), 0 0 0 4px var(--accent-color);
+
+  /* Transitions */
+  --transition-speed: 0.16s;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* web-ui popups (select, popover) portal to document.body at layer 5.
+     The sidebar and workflow panel sit at z-index 50, so the library default
+     of 5 draws the list behind the widget that opened it. */
+  --imf-ui-layer-5: 3000;
+
+  /* Lets the browser draw native controls — checkboxes, radios, select popups,
+     text carets — to match the chrome instead of forcing light widgets. */
+  color-scheme: dark;
+}
+
+/* Neutral variant of the dark theme: the same surface steps stripped of the
+   210deg hue, so the chrome is pure greyscale and Blue #245EFF is the only
+   colour in the frame. Status colours and washes carry over from the dark
+   preset, which they already suit. */
+:root[data-theme='gray'] {
+  --color-secondary: #303030;
+  --text-primary: #e8e8e8;
+  --text-secondary: #a2a2a2;
+  --text-tertiary: #808080;
+  --text-on-success: #1b1b1b;
+  --bg-primary: #1b1b1b;
+  --bg-secondary: #262626;
+  --bg-tertiary: #303030;
+  --bg-quaternary: #3b3b3b;
+  --border-color: #333333;
+  --border-strong: #454545;
+  --accent-wash: rgba(36, 94, 255, 0.2);
+  --accent-wash-hover: rgba(36, 94, 255, 0.12);
+}
+
+:root[data-theme='light'] {
+  --color-primary: #245eff;
+  --color-primary-hover: #1440c4;
+  --color-secondary: #e4edf0;
+  --text-primary: #06121d;
+  --text-secondary: #485357;
+  --text-tertiary: #78858a;
+  --text-on-primary: #ffffff;
+  --text-on-success: #ffffff;
+  --text-accent: #1440c4;
+  --bg-primary: #f0f6f7;
+  --bg-secondary: #f9fdfe;
+  --bg-tertiary: #e4edf0;
+  --bg-quaternary: #cedbde;
+  --border-color: #cedbde;
+  --border-strong: #a8b8bd;
+  --color-success: #1f7a4c;
+  --color-danger: #c33c3c;
+  --color-warning: #8a6100;
+  --color-info: #1f5fb0;
+  --success-color: #1f7a4c;
+  --error-color: #c33c3c;
+  --accent-color: #245eff;
+  --accent-color-hover: #1440c4;
+  --accent-color-rgb: 36, 94, 255;
+  --accent-wash: rgba(36, 94, 255, 0.12);
+  --accent-wash-hover: rgba(36, 94, 255, 0.07);
+  --shadow-sm: 0 1px 2px rgba(6, 18, 29, 0.08);
+  --shadow-md: 0 8px 24px -8px rgba(6, 18, 29, 0.18);
+  --shadow-lg: 0 24px 64px -16px rgba(6, 18, 29, 0.24);
+  color-scheme: light;
+}
+
+/* ===========================================
+   Reset & Base
+   =========================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.45;
+  letter-spacing: var(--tracking-tight);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* Numeric readouts should not jitter as values change. */
+input[type='number'],
+output,
+.status-text,
+.windowing__slider-value {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--accent-color);
+  color: #ffffff;
+}
+
+/* Keyboard focus is visible everywhere; pointer focus stays quiet. */
+:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Scrollbars: present enough to find, quiet enough to ignore. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg-quaternary) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-quaternary);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+body {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: var(--header-height) 1fr var(--status-bar-height);
+  grid-template-areas:
+    'header header'
+    'sidebar main'
+    'status status';
+  height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: grid-template-columns var(--transition-speed);
+  /* Width taken by the sidebar on each side, used to place resize handles. */
+  --panel-offset-left: 0px;
+  --panel-offset-right: 0px;
+}
+
+body.workflow-with-sidebar:not(.sidebar-right):not(.sidebar-collapsed) {
+  --panel-offset-left: var(--sidebar-width);
+}
+
+body.workflow-with-sidebar.sidebar-right:not(.sidebar-collapsed) {
+  --panel-offset-right: var(--sidebar-width);
+}
+
+#root {
+  display: contents;
+}
+
+body.sidebar-collapsed {
+  grid-template-columns: 0 1fr;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.2;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===========================================
+   Header
+   =========================================== */
+#header {
+  grid-area: header;
+  position: relative;
+  height: var(--header-height);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border-color);
+  display: grid;
+  /* The slack sits in the middle track, so the title and the controls each take
+     the width they need and the leftover keeps them apart. Side tracks of 1fr
+     would instead cap the controls at half the header even when the title is
+     short, hiding buttons behind a scroll on a window with room to spare. */
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.header-title {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  justify-self: start;
+  padding: 0 15px;
+}
+
+.header-title h1 {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-title--with-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-title__logo,
+.header-logo {
+  display: block;
+  max-width: 160px;
+  max-height: calc(var(--header-height) - 12px);
+  object-fit: contain;
+}
+
+.header-logo {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  margin: 0 15px;
+}
+
+body.header-logo-right .header-logo {
+  grid-column: 3;
+  justify-self: end;
+}
+
+body.header-with-logo:not(.header-logo-right).header-title-right .header-controls {
+  margin-left: 175px;
+}
+
+body.header-with-logo.header-logo-right:not(.header-title-right) .header-controls {
+  margin-right: 175px;
+}
+
+.header-controls {
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 20px;
+  gap: 12px;
+}
+
+body.header-title-center .header-title {
+  grid-column: 2;
+  justify-self: center;
+}
+
+body.header-title-right .header-title {
+  grid-column: 3;
+  justify-self: end;
+}
+
+body.header-title-right .header-controls {
+  grid-column: 1;
+  justify-content: flex-start;
+}
+
+body.header-title-right .header-controls__status {
+  order: -2;
+}
+
+body.header-title-right .header-controls__status-separator {
+  order: -1;
+}
+
+.header-controls__group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+/* An app may register more actions than fit the window. The toolbar is the only
+   part of the header allowed to give up space, and it scrolls rather than
+   clipping: the page itself never scrolls, so a button pushed out of this strip
+   would otherwise be unreachable. The scrollbar shows up only when there is
+   somewhere to scroll, which is what advertises the rest of the buttons. The
+   floor keeps a whole button visible on absurdly narrow windows. */
+.header-controls__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 120px;
+  flex-shrink: 1;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  /* The edge fade below carries the cue instead of a scrollbar: a bar in a 46px
+     header only adds height and pushes the buttons off its centre line. */
+  scrollbar-width: none;
+}
+
+.header-controls__toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.header-controls__toolbar[data-overflow-end='true'] {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+}
+
+.header-controls__toolbar[data-overflow-start='true'] {
+  -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(to left, #000 calc(100% - 28px), transparent);
+}
+
+.header-controls__toolbar[data-overflow-start='true'][data-overflow-end='true'] {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 28px,
+                                      #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 28px,
+                              #000 calc(100% - 28px), transparent);
+}
+
+.header-controls .imf-ui-button-module-root {
+  flex-shrink: 0;
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+.header-controls__separator {
+  width: 1px;
+  height: 20px;
+  background-color: var(--border-strong);
+}
+
+#action-separator {
+  display: none;
+}
+
+#action-separator.visible {
+  display: block;
+}
+
+#file-input,
+#folder-input {
+  display: none;
+}
+
+.file-picker-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.workflow-step-export select {
+  height: 32px;
+  padding: 0 10px;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--font-size-small);
+}
+
+/* ===========================================
+   Buttons
+   =========================================== */
+/* Buttons are rendered by @imfusion/web-ui's Button component, which ships
+   its own variant/size/disabled styling. Only layout-only modifiers that
+   Button doesn't cover (full width, min width, etc.) are kept here. */
+.button--compute {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* ===========================================
+   Status Indicator
+   =========================================== */
+/* Connection state is ambient information, so it reads as a small coloured dot
+   next to quiet mono text rather than a saturated badge shouting in the header.
+   Only failures and active work borrow any real colour. */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.status-indicator__row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  max-width: 100%;
+}
+
+/* The dot carries the state colour. */
+.status-indicator__row::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  color: var(--text-tertiary);
+}
+
+.status-indicator .status-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.status-indicator__cancel {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  font-size: 9px;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) var(--ease),
+              color var(--transition-speed) var(--ease);
+}
+
+.status-indicator__cancel:hover:not(:disabled) {
+  background: var(--color-danger);
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.status-indicator__cancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.status-indicator__cancel i {
+  margin: 0;
+  line-height: 1;
+}
+
+.status-connected .status-indicator__row::before {
+  color: var(--color-success);
+}
+
+.status-disconnected,
+.status-error {
+  color: var(--color-danger);
+}
+
+.status-disconnected .status-indicator__row::before,
+.status-error .status-indicator__row::before {
+  color: var(--color-danger);
+}
+
+.status-processing {
+  color: var(--text-accent);
+}
+
+.status-processing .status-indicator__row::before {
+  color: var(--accent-color);
+  animation: pulse 1.4s var(--ease) infinite;
+}
+
+.status-indicator .progress-bar {
+  flex: 0 0 auto;
+  width: 72px;
+  height: 3px;
+  background: var(--bg-quaternary);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.status-indicator .progress-bar__fill {
+  display: block;
+  height: 100%;
+  background: var(--accent-color);
+  border-radius: var(--radius-pill);
+  transition: width 0.15s ease-out;
+}
+
+/* Header placement, used only when an app hides the status bar. Space is scarce
+   here, so the badge is fixed on all three axes — otherwise the longest state
+   ("Processing… 100%") would widen it and shift every other control — and the
+   progress bar stacks under the text rather than sitting beside it. */
+.header-controls__status {
+  flex: 0 0 var(--status-indicator-width);
+  width: var(--status-indicator-width);
+  min-width: var(--status-indicator-width);
+  max-width: var(--status-indicator-width);
+  justify-content: flex-end;
+  overflow: hidden;
+  padding: 0 4px;
+}
+
+/* The bar claims a whole line, wrapping under the text. Ordering it last keeps
+   the cancel button up on the first line beside the percentage; left in source
+   order the full-width bar would push the button onto a third line. */
+.header-controls__status.status-processing {
+  flex-wrap: wrap;
+  gap: 5px 7px;
+}
+
+.header-controls__status.status-processing .status-indicator__row {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.header-controls__status.status-processing .progress-bar {
+  order: 1;
+  flex: 1 0 100%;
+  width: auto;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* ===========================================
+   Busy Bar
+   =========================================== */
+
+/* A line on the seam under the header, where the eye already is. The status bar
+   names the work, but it sits at the far bottom of the window and a transfer can
+   be over before anyone thinks to look down there.
+
+   It keeps its box when idle rather than being removed, so appearing costs an
+   opacity change and nothing on the page moves. */
+.busy-bar {
+  position: fixed;
+  top: calc(var(--header-height) - 1px);
+  right: 0;
+  left: 0;
+  height: 3px;
+  z-index: 101;
+  overflow: hidden;
+  background: transparent;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-speed) var(--ease);
+}
+
+.busy-bar[data-active='true'] {
+  background: color-mix(in srgb, var(--accent-color) 18%, transparent);
+  opacity: 1;
+}
+
+.busy-bar__fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent-color);
+}
+
+/* Known progress fills from the left; unknown progress sweeps, which says "still
+   working" without implying an amount. */
+.busy-bar[data-determinate='true'] .busy-bar__fill {
+  transition: width 0.15s ease-out;
+}
+
+.busy-bar[data-determinate='false'] .busy-bar__fill {
+  width: 35%;
+  animation: busy-sweep 1.15s var(--ease) infinite;
+}
+
+@keyframes busy-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(340%); }
+}
+
+/* The viewer stays live while the client waits — panning and windowing are local
+   and touch nothing the server counts — so the cue belongs on the chrome that is
+   genuinely out of reach, not on the whole page. */
+body.is-busy .header-controls__toolbar {
+  opacity: 0.6;
+}
+
+body.is-busy .header-controls__toolbar,
+body.is-busy .sidebar,
+body.is-busy .workflow-panel {
+  cursor: progress;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .busy-bar[data-determinate='false'] .busy-bar__fill {
+    animation: pulse 1.4s var(--ease) infinite;
+    width: 100%;
+  }
+}
+
+/* ===========================================
+   Sidebar
+   =========================================== */
+/* The sidebar is a gutter, and each widget is a card floating in it. Hairline
+   dividers between full-bleed sections read as a settings list; cards read as
+   distinct tools. */
+#sidebar,
+.sidebar {
+  grid-area: sidebar;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+}
+
+.sidebar__section {
+  overflow: hidden;
+  flex: 0 0 auto;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.sidebar__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) var(--ease);
+}
+
+.sidebar__header:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.sidebar__title {
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: var(--font-size-micro);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar__header:hover .sidebar__title {
+  color: var(--text-secondary);
+}
+
+.sidebar__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar__icon span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  transition: transform var(--transition-speed) var(--ease),
+              color var(--transition-speed) var(--ease);
+}
+
+.sidebar__header:hover .sidebar__icon span {
+  color: var(--text-secondary);
+}
+
+.sidebar__icon span.collapsed {
+  transform: rotate(-90deg);
+}
+
+.sidebar__content {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  padding: 0 12px;
+  transition: max-height 0.3s cubic-bezier(0, 1, 0, 1), opacity 0.2s ease, padding 0.2s ease;
+}
+
+.sidebar__content--expanded {
+  max-height: 2000px;
+  padding: 2px 12px 12px;
+  opacity: 1;
+  transition: max-height 0.4s ease-in-out, opacity 0.3s ease, padding 0.3s ease;
+}
+
+.sidebar__widget-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 12px 16px;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-small);
+  line-height: 1.45;
+}
+
+.sidebar__empty i {
+  font-size: 18px;
+  line-height: 1;
+  opacity: 0.55;
+}
+
+/* Sidebar toggle */
+.sidebar__toggle {
+  position: fixed;
+  top: var(--header-height);
+  left: var(--sidebar-width);
+  width: 20px;
+  height: 80px;
+  padding: 0;
+  border: none;
+  background-color: var(--bg-secondary);
+  color: var(--text-tertiary);
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: left var(--transition-speed), color var(--transition-speed) var(--ease);
+  clip-path: path('M 0 0 L 10 6 Q 20 6, 20 16 L 20 64 Q 20 74, 10 74 L 0 80 Z');
+}
+
+.sidebar__toggle:hover {
+  color: var(--text-primary);
+}
+
+.sidebar__toggle i {
+  font-size: 0.875rem;
+  transition: transform 0.3s ease;
+  margin-left: -3px;
+}
+
+body.sidebar-collapsed .sidebar__toggle {
+  left: 0;
+}
+
+body.sidebar-collapsed .sidebar__toggle i {
+  transform: rotate(180deg);
+}
+
+/* ===========================================
+   Panel resize handles
+   =========================================== */
+.panel-resizer {
+  position: fixed;
+  top: var(--header-height);
+  bottom: var(--status-bar-height);
+  width: 9px;
+  margin-left: -4px;
+  cursor: col-resize;
+  touch-action: none;
+  z-index: 60;
+}
+
+.panel-resizer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 4px;
+  width: 2px;
+  background-color: transparent;
+  transition: background-color var(--transition-speed);
+}
+
+.panel-resizer:hover::after,
+.panel-resizer:focus-visible::after,
+.panel-resizer--active::after {
+  background-color: var(--accent-color);
+}
+
+.panel-resizer:focus-visible {
+  outline: none;
+}
+
+.panel-resizer--sidebar {
+  left: var(--sidebar-width);
+}
+
+.panel-resizer--workflow-panel {
+  left: calc(var(--panel-offset-left) + var(--workflow-panel-width));
+}
+
+body.sidebar-collapsed .panel-resizer--sidebar {
+  display: none;
+}
+
+body.status-hidden .panel-resizer {
+  bottom: 0;
+}
+
+body.panel-resizing {
+  transition: none;
+  cursor: col-resize;
+}
+
+body.panel-resizing .sidebar__toggle,
+body.panel-resizing .landing-page {
+  transition: none;
+}
+
+/* ===========================================
+   Data Widget
+   =========================================== */
+#data-widget-list {
+  padding: 2px 0;
+}
+
+#data-empty {
+  display: block;
+}
+
+#data-widget-list:not(:empty) + #data-empty {
+  display: none;
+}
+
+/* A selected dataset is marked with an accent wash and a spine, not a solid
+   fill: a list of solid blue rows makes it impossible to see which one is
+   actually current. */
+.data-item {
+  position: relative;
+  padding: 6px 8px;
+  margin-bottom: 2px;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: var(--font-size-small);
+  display: flex;
+  align-items: center;
+  transition: background-color var(--transition-speed) var(--ease),
+              color var(--transition-speed) var(--ease);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.data-item:hover:not(.data-item--selected) {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.data-item:last-child {
+  margin-bottom: 0;
+}
+
+.data-item--selected {
+  background-color: var(--accent-wash);
+  box-shadow: inset 2px 0 0 var(--accent-color);
+  color: var(--text-primary);
+}
+
+.data-item__selectionToggle {
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.data-item__name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Modality tag, so a list of similarly named datasets can be told apart at a
+   glance. Kept neutral rather than colour-coded per modality: the accent is
+   already spoken for by selection, and the viewport is greyscale. */
+.data-item__modality {
+  flex-shrink: 0;
+  margin-right: 8px;
+  padding: 1px 5px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+.data-item--selected .data-item__modality {
+  border-color: rgba(var(--accent-color-rgb), 0.35);
+  background-color: transparent;
+  color: var(--text-accent);
+}
+
+.data-item__icon {
+  margin-right: 8px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.data-item--selected .data-item__icon {
+  color: var(--text-accent);
+}
+
+.data-item__delete {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-speed) var(--ease),
+              color var(--transition-speed) var(--ease);
+  flex-shrink: 0;
+}
+
+.data-item:hover .data-item__delete,
+.data-item--selected .data-item__delete {
+  display: flex;
+}
+
+.data-item__delete:hover:not(:disabled) {
+  background-color: var(--color-danger);
+  color: #ffffff;
+}
+
+.data-item__delete:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.data-item__delete i {
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* ===========================================
+   Views Widget
+   =========================================== */
+#views-widget-content {
+  padding: 0;
+}
+
+.views__view-controls {
+  margin-bottom: 12px;
+}
+
+/* View and layout pickers are segmented controls: one recessed track, and the
+   selected segment lifts out of it. */
+.views__view-buttons,
+.views__layout-buttons {
+  display: flex;
+  gap: 2px;
+  justify-content: space-between;
+  padding: 2px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.views__view-button,
+.views__layout-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  height: 30px;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  transition: background-color var(--transition-speed) var(--ease),
+              color var(--transition-speed) var(--ease);
+}
+
+.views__view-button:hover,
+.views__layout-button:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.views__view-button--active,
+.views__layout-button--active,
+.views__view-button--active:hover,
+.views__layout-button--active:hover {
+  background: var(--accent-wash);
+  box-shadow: inset 0 0 0 1px var(--accent-color);
+  color: var(--text-accent);
+}
+
+.views__view-icon {
+  width: 22px;
+  height: 22px;
+}
+
+/* These are white monochrome bitmaps loaded through <img>, so they cannot
+   inherit currentColor the way the inline layout icons do. */
+:root[data-theme='light'] .views__view-icon {
+  filter: invert(1);
+}
+
+.views__layout-controls {
+  margin-top: 12px;
+}
+
+.views__layout-title {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  font-weight: 400;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  margin-bottom: 7px;
+}
+
+.views__layout-button .views__layout-icon {
+  width: 22px;
+  height: 22px;
+  --icon-color: currentColor;
+  fill: var(--icon-color);
+}
+
+/* ===========================================
+   Display Options Widget
+   =========================================== */
+#display-options-widget-content {
+  padding: 0;
+}
+
+#display-options-empty {
+  display: block;
+}
+
+.windowing__tabs:not(:empty) ~ #display-options-empty {
+  display: none;
+}
+
+/* Tab navigation — a segmented control rather than browser-chrome tabs, which
+   let the panel avoid drawing a second nested box around the content. */
+.windowing__tabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 12px;
+  padding: 2px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  position: relative;
+  z-index: 1;
+}
+
+.windowing__tab {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 10px;
+  text-align: center;
+  background-color: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  border: none;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+  transition: background-color var(--transition-speed) var(--ease),
+              color var(--transition-speed) var(--ease);
+}
+
+.windowing__tab:hover:not(.windowing__tab--disabled) {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.windowing__tab--active,
+.windowing__tab--active:hover {
+  background-color: var(--bg-tertiary);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+  color: var(--text-primary);
+  z-index: 2;
+}
+
+.windowing__tab--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Tab content */
+.windowing__tab-content {
+  display: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.windowing__tab-content--active {
+  display: block;
+}
+
+.windowing__tab-content--disabled {
+  opacity: 0.5;
+}
+
+/* Control groups */
+.windowing__control-group {
+  margin-bottom: 12px;
+}
+
+.windowing__control-group:last-child {
+  margin-bottom: 0;
+}
+
+.windowing__control-group--inline {
+  display: flex;
+  align-items: center;
+}
+
+/* Slider group */
+.windowing__slider-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* The slider control (track, indicator, thumb) is rendered by
+   @imfusion/web-ui's Slider component, which ships its own styling. Only the
+   layout wrapper and the numeric readout are styled here. */
+.windowing__slider-value {
+  min-width: 48px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+/* Checkbox styling */
+.windowing__checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  color: var(--text-secondary);
+}
+
+.windowing__checkbox-label:hover {
+  color: var(--text-primary);
+}
+
+/* Auto window button */
+.windowing__auto-button {
+  width: 100%;
+}
+
+/* ===========================================
+   Algorithm UI
+   =========================================== */
+#algorithm-container {
+  display: none;
+}
+
+#algorithm-container.visible {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#algorithm-empty {
+  display: block;
+}
+
+#algorithm-container.visible + #algorithm-empty {
+  display: none;
+}
+
+.control-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-tertiary);
+  margin-bottom: 7px;
+  font-weight: 400;
+}
+
+.algorithm-parameters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.operation-inputs,
+.workflow-step-inputs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.operation-inputs,
+.workflow-step-inputs {
+  flex-direction: column;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(6, 18, 29, 0.7);
+  backdrop-filter: blur(3px);
+  animation: modal-backdrop-in 0.14s var(--ease);
+}
+
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* A dialog waiting on the viewer, e.g. for an annotation to be drawn. It stays
+   mounted so the form it holds survives, but it must not cover the views or
+   swallow the clicks meant for them. */
+.modal-backdrop--hidden {
+  display: none;
+}
+
+.modal {
+  width: min(420px, 100%);
+  padding: 22px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
+  animation: modal-in 0.18s var(--ease);
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.99); }
+  to { opacity: 1; transform: none; }
+}
+
+.modal--wide {
+  width: min(620px, 100%);
+}
+
+.modal--import {
+  width: min(900px, 100%);
+}
+
+.modal--import .landing-page__content {
+  width: 100%;
+  gap: 20px;
+}
+
+.modal--import .landing-page__load-panel {
+  padding: 28px 40px;
+}
+
+.modal h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.modal__content {
+  max-height: min(70vh, 720px);
+  overflow-y: auto;
+}
+
+.modal p {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-small);
+  line-height: 1.55;
+}
+
+.modal__error {
+  margin-top: 12px;
+  color: var(--color-danger);
+  font-size: var(--font-size-small);
+}
+
+.modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-color);
+}
+
+.info-content {
+  line-height: 1.55;
+}
+
+.info-content > :last-child {
+  margin-bottom: 0;
+}
+
+.info-content a {
+  color: var(--text-accent);
+}
+
+.info-content img {
+  max-width: 100%;
+}
+
+.operation-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 9rem;
+}
+
+.operation-input > span {
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.workflow-step-inputs .workflow-step-file-upload,
+.workflow-step-inputs .landing-page__examples-panel {
+  margin: 0;
+}
+
+/* Loading data and assigning it to an input are consecutive moves, so they are
+   numbered sections rather than one undifferentiated stack of controls. */
+.workflow-step-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.workflow-step-stage + .workflow-step-stage {
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+}
+
+.workflow-step-stage--pending {
+  opacity: 0.55;
+}
+
+.workflow-step-stage__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+}
+
+.workflow-step-stage__number {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  font-size: var(--font-size-micro);
+}
+
+.workflow-step-stage__hint {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-small);
+}
+
+/* Input count controls are housekeeping, not a step in the task, so they sit
+   right-aligned as small icon buttons instead of reading as two more verbs
+   competing with the algorithm's own controls. */
+.operation-inputs__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+  transition: background-color var(--transition-speed) var(--ease),
+              border-color var(--transition-speed) var(--ease),
+              color var(--transition-speed) var(--ease);
+}
+
+.icon-button:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.icon-button i {
+  line-height: 1;
+}
+
+/* Separates the "which data" half of a panel from the "which algorithm" half. */
+.operation-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.operation-section > .control-label {
+  margin-bottom: 0;
+}
+
+.algorithm-parameters:empty {
+  display: none;
+}
+
+.parameter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Parameter labels and controls (Input, Select, Checkbox) are rendered by
+   @imfusion/web-ui's Field composition, which ships its own styling. */
+
+.no-params {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-small);
+  text-align: center;
+  padding: 10px;
+}
+
+/* ===========================================
+   Main Canvas Area
+   =========================================== */
+#main-canvas-area {
+  grid-area: main;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  background-color: var(--bg-primary);
+}
+
+#canvas-container {
+  flex: 1;
+  position: relative;
+}
+
+#canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ===========================================
+   Landing Page
+   =========================================== */
+.landing-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  padding: 36px;
+  background-color: var(--bg-primary);
+  /* A single soft accent bloom behind the drop panel instead of a corner-to-corner
+     gradient, which reads as an unfinished background. */
+  background-image: radial-gradient(60% 55% at 50% 32%,
+    rgba(var(--accent-color-rgb), 0.09), transparent 70%);
+  z-index: 10;
+}
+
+.landing-page.hidden {
+  display: none;
+}
+
+.landing-page__content {
+  display: flex;
+  width: min(880px, 100%);
+  flex-direction: column;
+  gap: 20px;
+  margin: auto;
+}
+
+.landing-page__load-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 44px 56px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--border-strong);
+  transition: border-color var(--transition-speed) var(--ease),
+              background-color var(--transition-speed) var(--ease);
+}
+
+.landing-page__title {
+  max-width: 30rem;
+  font-size: 19px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.landing-page__load-panel:hover {
+  border-color: var(--color-primary);
+}
+
+.landing-page__message {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-small);
+}
+
+.landing-page__examples-panel {
+  padding: 22px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+}
+
+.landing-page__examples-title {
+  margin-bottom: 16px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  font-weight: 400;
+  letter-spacing: var(--tracking-label);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.landing-page__examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 240px));
+  justify-content: center;
+  gap: 22px;
+}
+
+.landing-page__example-card {
+  position: relative;
+  display: grid;
+  aspect-ratio: 1;
+  min-width: 0;
+  place-items: center;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font: inherit;
+  transition: border-color var(--transition-speed) var(--ease),
+              transform var(--transition-speed) var(--ease),
+              box-shadow var(--transition-speed) var(--ease);
+}
+
+.landing-page__example-card:hover:not(:disabled),
+.landing-page__example-card:focus-visible {
+  border-color: var(--color-primary);
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.landing-page__example-card:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.landing-page__example-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.landing-page__example-name {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  max-width: calc(100% - 16px);
+  padding: 4px 8px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: rgba(6, 18, 29, 0.78);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.landing-page__example-card--text-only .landing-page__example-name {
+  position: static;
+  max-width: 90%;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: var(--font-size-large);
+  text-align: center;
+  white-space: normal;
+}
+
+.landing-page__examples-panel--compact {
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.landing-page__examples-panel--compact .landing-page__examples-title {
+  margin-bottom: 10px;
+}
+
+.landing-page__examples-panel--compact .landing-page__examples-grid {
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.landing-page__examples-panel--compact .landing-page__example-name {
+  top: 6px;
+  left: 6px;
+  max-width: calc(100% - 12px);
+  padding: 3px 6px;
+  font-size: var(--font-size-small);
+}
+
+.landing-page__examples-panel--compact
+.landing-page__example-card--text-only
+.landing-page__example-name {
+  font-size: var(--font-size-small);
+}
+
+/* Loading state */
+.landing-page__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Held invisible for a moment before it paints. Blocking work is often over
+   almost at once — a session with no preloaded data completes its initial sync
+   in a single frame — and covering the whole page for 30ms reads as a glitch
+   rather than as progress. Waiting costs nothing: the overlay is only worth
+   showing for work slow enough to wonder about. */
+.loading-overlay {
+  position: fixed;
+  inset: var(--header-height) 0 var(--status-bar-height);
+  z-index: 1500;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  animation: overlay-appear 0.12s var(--ease) 0.25s forwards;
+}
+
+@keyframes overlay-appear {
+  to { opacity: 1; }
+}
+
+.loading-overlay__panel {
+  display: flex;
+  min-width: 280px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 26px 34px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-lg);
+}
+
+.loading-overlay__panel span {
+  color: var(--text-secondary);
+  font-size: var(--font-size-small);
+}
+
+.loading-overlay__progress {
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: var(--bg-quaternary);
+}
+
+.loading-overlay__progress > span {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--accent-color);
+  transition: width 0.2s ease;
+}
+
+.landing-page__loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--bg-quaternary);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.landing-page__loading-text {
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===========================================
+   Status Bar
+   =========================================== */
+#status-bar {
+  grid-area: status;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  overflow: hidden;
+}
+
+.message-area {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status bar placement: the indicator's natural home, at the far end of the bar
+   with the message text yielding the space. The reserved width keeps a changing
+   percentage from nudging that text back and forth. */
+.status-bar__status {
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  min-width: 132px;
+  padding-left: 12px;
+  border-left: 1px solid var(--border-color);
+}
+
+.message-error {
+  color: var(--color-danger);
+}
+
+.message-success {
+  color: var(--color-success);
+}
+
+.message-info {
+  color: var(--color-info);
+}
+
+/* ===========================================
+   SDK Loading Overlay
+   =========================================== */
+.sdk-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.sdk-loading-overlay.hidden {
+  display: none;
+}
+
+.sdk-loading-overlay__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.sdk-loading-overlay__spinner {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--bg-quaternary);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.sdk-loading-overlay__text {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  font-weight: 400;
+}
+
+/* ===========================================
+   Drag and Drop States
+   =========================================== */
+.landing-page.drag-over .landing-page__load-panel,
+.import-dialog.drag-over .landing-page__load-panel {
+  border-color: var(--color-primary);
+  background-color: var(--accent-wash-hover);
+}
+
+/* ===========================================
+   Context Menu
+   =========================================== */
+.context-menu {
+  position: absolute;
+  z-index: 1000;
+  background-color: var(--bg-secondary);
+  min-width: 172px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-lg);
+  padding: 4px;
+  display: block;
+  animation: contextMenuFadeIn 0.1s var(--ease);
+  user-select: none;
+  outline: none;
+}
+
+@keyframes contextMenuFadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: none; }
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: var(--font-size-small);
+  position: relative;
+  transition: background-color var(--transition-speed) var(--ease),
+              color var(--transition-speed) var(--ease);
+}
+
+.context-menu-item:hover,
+.context-menu-item.focused {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.context-menu-item:active,
+.context-menu-item.focused:active {
+  background-color: var(--accent-wash);
+  color: var(--text-primary);
+}
+
+.context-menu-separator {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 4px 0;
+}
+
+.context-menu-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  margin-right: 6px;
+  color: var(--text-accent);
+  font-size: 14px;
+}
+
+.context-menu-submenu {
+  position: relative;
+  justify-content: space-between;
+  padding-right: 26px;
+}
+
+.context-menu-submenu-indicator {
+  position: absolute;
+  right: 9px;
+  font-size: 8px;
+  color: var(--text-tertiary);
+}
+
+.context-submenu {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  background-color: var(--bg-secondary);
+  min-width: 172px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-lg);
+  padding: 4px;
+  display: none;
+  z-index: 1001;
+  animation: contextMenuFadeIn 0.15s var(--ease);
+}
+
+.context-menu-item:hover .context-submenu {
+  display: block;
+}
+
+/* ===========================================
+   Algorithm Controller Sections
+   =========================================== */
+.controller-container {
+  padding: 0;
+}
+
+.controller-parameters {
+  margin-bottom: 10px;
+}
+
+.controller-compute-button {
+  width: 100%;
+}
+
+/* Disabled/incompatible state */
+.controller-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.controller-incompatible .sidebar__header {
+  opacity: 0.6;
+}
+
+.controller-incompatible .sidebar__title::after {
+  content: ' (incompatible)';
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+.controller-empty {
+  font-size: var(--font-size-small);
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 10px 4px 6px;
+}
+
+/* Hide empty message when controller is compatible */
+.controller-container:not(.controller-disabled) + .controller-empty {
+  display: none !important;
+}
+
+/* ============================================================================
+   Workflow Panel
+   ============================================================================ */
+
+.workflow-panel {
+  grid-area: workflow;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  border-right: 1px solid var(--border-color);
+}
+
+.workflow-panel.hidden {
+  display: none;
+}
+
+/* Progress bar */
+.workflow-panel__progress {
+  margin-bottom: 20px;
+}
+
+.workflow-panel__progress-bar {
+  height: 3px;
+  background: var(--bg-quaternary);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.workflow-panel__progress-fill {
+  height: 100%;
+  background: var(--accent-color);
+  border-radius: var(--radius-pill);
+  transition: width 0.3s var(--ease);
+  width: 0%;
+}
+
+.workflow-panel__progress-text {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-tertiary);
+  text-align: left;
+}
+
+/* Step content area */
+.workflow-panel__step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* Without this, the step's automatic minimum height is its content's
+     height (flex items default to overflow:visible sizing), so a long
+     custom-step body — a chat transcript, for instance — grows the whole
+     panel instead of scrolling within workflow-panel__step-content. */
+  min-height: 0;
+}
+
+.workflow-panel__step-title {
+  font-size: var(--font-size-large);
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0 0 14px 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.workflow-panel__step-content {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Step content types */
+.workflow-step-message {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  padding: 12px 0;
+}
+
+.workflow-step-file-upload {
+  text-align: center;
+  padding: 26px 18px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  margin: 14px 0;
+  transition: border-color var(--transition-speed) var(--ease),
+              background-color var(--transition-speed) var(--ease);
+}
+
+.workflow-step-file-upload:hover,
+.workflow-step-file-upload.drag-over {
+  border-color: var(--accent-color);
+  background: var(--accent-wash-hover);
+}
+
+.workflow-step-file-upload__icon {
+  font-size: 28px;
+  line-height: 1;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.workflow-step-file-upload__text {
+  color: var(--text-secondary);
+  font-size: var(--font-size-small);
+}
+
+.workflow-step-file-upload .file-picker-buttons {
+  margin-top: 16px;
+}
+
+.workflow-step-file-upload .landing-page__message {
+  display: block;
+  margin-top: 8px;
+}
+
+/* Parameters form */
+.workflow-step-parameters {
+  padding: 8px 0;
+}
+
+.workflow-step-parameters .parameter-item {
+  margin-bottom: 16px;
+}
+
+.workflow-step-parameters label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: var(--font-size-small);
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.workflow-step-parameters input[type="text"],
+.workflow-step-parameters input[type="number"],
+.workflow-step-parameters select {
+  width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--font-size-small);
+  transition: border-color var(--transition-speed) var(--ease),
+              box-shadow var(--transition-speed) var(--ease);
+}
+
+.workflow-step-parameters input[type="text"]:focus,
+.workflow-step-parameters input[type="number"]:focus,
+.workflow-step-parameters select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+
+.workflow-step-parameters input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* Processing step */
+.workflow-step-processing {
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.workflow-step-processing__spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--bg-quaternary);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+
+.workflow-step-processing__text {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+}
+
+.workflow-step-processing--complete .workflow-step-processing__spinner {
+  display: none;
+}
+
+.workflow-step-processing--complete::before {
+  content: "\F633";  /* Bootstrap Icons check-circle-fill */
+  font-family: 'bootstrap-icons';
+  font-size: 30px;
+  line-height: 1;
+  color: var(--success-color, #28a745);
+  display: block;
+  margin-bottom: 16px;
+}
+
+.workflow-step-processing--error::before {
+  content: "\F623";  /* Bootstrap Icons x-circle-fill */
+  font-family: 'bootstrap-icons';
+  font-size: 30px;
+  line-height: 1;
+  color: var(--error-color, #dc3545);
+  display: block;
+  margin-bottom: 16px;
+}
+
+.workflow-step-processing--error .workflow-step-processing__spinner {
+  display: none;
+}
+
+.workflow-step-processing--error .workflow-step-processing__text {
+  color: var(--error-color);
+}
+
+.workflow-step-processing__guidance {
+  color: var(--text-secondary);
+  font-size: var(--font-size-small);
+  line-height: 1.4;
+  margin-top: 10px;
+}
+
+/* Brush step */
+.workflow-step-brush {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 12px 0;
+}
+
+.workflow-step-brush__message {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.workflow-step-brush__label-select {
+  width: 100%;
+}
+
+.workflow-step-brush__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.workflow-step-brush__toggle {
+  flex: 1;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.workflow-step-brush__toggle--active {
+  background: var(--color-danger, var(--error-color, #dc3545));
+  border-color: transparent;
+  color: white;
+  animation: brush-recording 1.6s ease-in-out infinite;
+}
+
+.workflow-step-brush__reset {
+  flex: 0 0 auto;
+  min-width: 90px;
+}
+
+@keyframes brush-recording {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(242, 99, 92, 0.45); }
+  50% { box-shadow: 0 0 0 6px rgba(242, 99, 92, 0); }
+}
+
+.workflow-step-brush__error {
+  margin: 0;
+  color: var(--error-color, #dc3545);
+  font-size: var(--font-size-small);
+}
+
+.workflow-step-brush__confirmation {
+  margin: -6px 0 0;
+  color: var(--success-color, #28a745);
+  font-size: var(--font-size-small);
+  text-align: center;
+}
+
+.workflow-step-brush__confirmation i {
+  margin-right: 6px;
+}
+
+/* Annotations: the step, the custom-step element, the action parameter and the
+   sidebar panel all render the same list. */
+.annotation-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.annotation-list__item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+  font-size: var(--font-size-small);
+}
+
+.annotation-list__item--active {
+  border-left-color: var(--accent-color);
+}
+
+.annotation-list__item--complete {
+  border-left-color: var(--success-color, #28a745);
+}
+
+.annotation-list__name {
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.annotation-list__measurement {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.annotation-list__points {
+  grid-column: 1 / -1;
+  color: var(--text-secondary);
+  font-family: var(--font-family-mono, monospace);
+  font-size: calc(var(--font-size-small) - 1px);
+  overflow-wrap: anywhere;
+}
+
+.annotation-list__pending {
+  grid-column: 1 / -1;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.annotation-list__error {
+  grid-column: 1 / -1;
+  color: var(--error-color, #dc3545);
+}
+
+/* Annotation step */
+.workflow-step-annotation {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 12px 0;
+}
+
+.workflow-step-annotation__message {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.workflow-step-annotation__progress {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--font-size-small);
+}
+
+.workflow-step-annotation__role {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.workflow-step-annotation__role-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: capitalize;
+}
+
+.workflow-step-annotation__swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: 0 0 auto;
+}
+
+.workflow-step-annotation__role-data {
+  margin-left: auto;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  text-transform: none;
+}
+
+.workflow-step-annotation__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.workflow-step-annotation__error {
+  margin: 0;
+  color: var(--error-color, #dc3545);
+  font-size: var(--font-size-small);
+}
+
+.workflow-step-annotation__hint,
+.sidebar__hint {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-small);
+}
+
+.workflow-step-custom__annotation {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workflow-step-custom__annotation-label {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.workflow-step-custom__annotation-actions,
+.parameter-annotation__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.parameter-annotation {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Standing instruction while a dialog is hidden and the user is drawing. Sits
+   at the bottom, clear of the header controls and of the crosshair in the
+   middle of a view. */
+.placement-prompt {
+  position: fixed;
+  bottom: calc(var(--status-bar-height) + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--accent-color);
+  border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
+  font-size: var(--font-size-small);
+  animation: modal-in 0.18s var(--ease);
+}
+
+.placement-prompt__text strong {
+  font-weight: 500;
+}
+
+/* The inputs and the parameters are two questions, not one list of fields. */
+.operation-inputs + .algorithm-parameters {
+  margin-top: 18px;
+  width: 100%;
+}
+
+/* Sidebar annotation panel */
+.annotation-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.annotation-tools__button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: var(--font-size-small);
+  cursor: pointer;
+}
+
+.annotation-tools__button:hover {
+  border-color: var(--accent-color);
+  color: var(--text-primary);
+}
+
+.annotation-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.annotation-group__title {
+  margin: 8px 0 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.annotation-group__item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+  font-size: var(--font-size-small);
+}
+
+.annotation-group__type {
+  color: var(--text-primary);
+}
+
+.annotation-group__points {
+  color: var(--text-secondary);
+  font-family: var(--font-family-mono, monospace);
+  font-size: calc(var(--font-size-small) - 1px);
+  overflow-wrap: anywhere;
+}
+
+.annotation-group__delete {
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.annotation-group__delete:hover {
+  color: var(--error-color, #dc3545);
+}
+
+/* Validation step */
+.workflow-step-validation {
+  text-align: center;
+  padding: 20px;
+}
+
+.workflow-step-validation__message {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  margin-bottom: 20px;
+}
+
+.workflow-step-validation__buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.workflow-step-validation__buttons .button--selected,
+.workflow-step-validation__buttons .button--unselected {
+  transition: box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+.workflow-step-validation__buttons .button--selected {
+  box-shadow: 0 0 0 2px var(--bg-secondary), 0 0 0 4px currentColor;
+}
+
+.workflow-step-validation__buttons .button--unselected {
+  opacity: 0.45;
+}
+
+/* Export step */
+.workflow-step-export {
+  padding: 20px;
+}
+
+.workflow-step-export__message {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.workflow-step-export__format {
+  margin-bottom: 12px;
+}
+
+.workflow-step-export .button--export {
+  width: 100%;
+}
+
+.workflow-step-export__confirmation {
+  color: var(--success-color, #28a745);
+  font-size: var(--font-size-small);
+  margin: 14px 0 0;
+  text-align: center;
+}
+
+.workflow-step-export__confirmation i {
+  margin-right: 6px;
+}
+
+/* Custom steps */
+.workflow-step-custom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  height: 100%;
+  min-height: 0;
+}
+
+.workflow-step-custom__history {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.workflow-step-custom__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: none;
+}
+
+.workflow-step-custom__text {
+  color: var(--text-secondary);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.workflow-step-custom__text > :first-child {
+  margin-top: 0;
+}
+
+.workflow-step-custom__text > :last-child {
+  margin-bottom: 0;
+}
+
+.workflow-step-custom__text strong {
+  color: var(--text-primary);
+}
+
+.workflow-step-custom__text blockquote {
+  background: var(--bg-tertiary);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 4px;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 10px 12px;
+}
+
+.workflow-step-custom__text blockquote > :first-child {
+  margin-top: 0;
+}
+
+.workflow-step-custom__text blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.workflow-step-custom__alert {
+  border: 1px solid var(--border-color);
+  border-left: 2px solid var(--color-info);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+  padding: 10px 12px;
+}
+
+.workflow-step-custom__alert--success {
+  border-left-color: var(--color-success);
+}
+
+.workflow-step-custom__alert--warning {
+  border-left-color: var(--color-warning);
+}
+
+.workflow-step-custom__alert--danger {
+  border-left-color: var(--color-danger);
+}
+
+.workflow-step-custom__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+/* Values sit on a shared baseline across the row even when one label wraps to
+   two lines and its neighbour does not. */
+.workflow-step-custom__metric {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+}
+
+.workflow-step-custom__metric dt {
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  margin-bottom: 6px;
+}
+
+.workflow-step-custom__metric dd {
+  color: var(--text-primary);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  margin: auto 0 0;
+}
+
+.workflow-step-custom__metric-unit {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  margin-left: 4px;
+}
+
+.workflow-step-custom__table {
+  border-collapse: collapse;
+  font-size: var(--font-size-small);
+  width: 100%;
+}
+
+.workflow-step-custom__table caption {
+  caption-side: bottom;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  padding-top: 6px;
+  text-align: left;
+}
+
+.workflow-step-custom__table th,
+.workflow-step-custom__table td {
+  border-bottom: 1px solid var(--border-color);
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.workflow-step-custom__table th {
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-micro);
+  font-weight: 400;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.workflow-step-custom__table td {
+  color: var(--text-primary);
+}
+
+.workflow-step-custom__figure {
+  margin: 0;
+}
+
+.workflow-step-custom__figure figcaption {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  padding-top: 6px;
+}
+
+.workflow-step-custom__chart {
+  display: block;
+  height: auto;
+  overflow: visible;
+  width: 100%;
+}
+
+.workflow-step-custom__chart-axis {
+  fill: none;
+  stroke: var(--border-color);
+  stroke-width: 1;
+}
+
+.workflow-step-custom__chart-tick,
+.workflow-step-custom__chart-axis-label {
+  fill: var(--text-secondary);
+  font-size: 9px;
+}
+
+.workflow-step-custom__chart-axis-label {
+  fill: var(--text-tertiary);
+}
+
+.workflow-step-custom__chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+}
+
+.workflow-step-custom__chart-legend li {
+  align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  font-size: var(--font-size-xs);
+  gap: 5px;
+}
+
+.workflow-step-custom__chart-legend span {
+  border-radius: 2px;
+  height: 8px;
+  width: 8px;
+}
+
+.workflow-step-custom__image {
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.workflow-step-custom__button {
+  width: 100%;
+}
+
+/* Navigation buttons */
+.workflow-panel__nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 18px;
+}
+
+.workflow-panel__nav-spacer {
+  flex: 1;
+}
+
+.button--workflow-nav {
+  min-width: 88px;
+}
+
+/* Step indicators (breadcrumb ticks) — a run of segments reads as a track with
+   a position in it, where equal-sized dots only read as decoration. */
+.workflow-panel__indicators {
+  display: flex;
+  gap: 4px;
+  margin-top: 14px;
+}
+
+.workflow-panel__indicator {
+  flex: 1;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-quaternary);
+  transition: background-color 0.2s var(--ease);
+}
+
+.workflow-panel__indicator--active {
+  background: var(--accent-color);
+}
+
+.workflow-panel__indicator--completed {
+  background: var(--success-color, #28a745);
+}
+
+/* Workflow page shell */
+body.workflow-active {
+  grid-template-columns: var(--workflow-panel-width) 1fr;
+  grid-template-rows: var(--header-height) 1fr var(--status-bar-height);
+  grid-template-areas:
+    'header header'
+    'workflow main'
+    'status status';
+}
+
+body.workflow-active .workflow-panel {
+  position: relative;
+  grid-area: workflow;
+  width: auto;
+  height: 100%;
+  z-index: 50;
+}
+
+body.workflow-active #main-canvas-area {
+  grid-area: main;
+  margin-left: 0;
+}
+
+body.workflow-active .landing-page {
+  display: none;
+}
+
+/* React shell overrides */
+.landing-page {
+  position: fixed;
+  top: var(--header-height);
+  right: 0;
+  bottom: var(--status-bar-height);
+  left: var(--sidebar-width);
+  width: auto;
+  height: auto;
+  z-index: 20;
+}
+
+body.sidebar-collapsed .landing-page,
+body:not(:has(.sidebar)) .landing-page {
+  left: 0;
+}
+
+.sidebar__header {
+  width: 100%;
+  appearance: none;
+  background-color: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.context-menu,
+.context-submenu {
+  color: var(--text-primary);
+}
+
+.context-menu-item {
+  width: 100%;
+  appearance: none;
+  background-color: transparent;
+  border: 0;
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+}
+
+/* File loaded indicator in workflow */
+.workflow-step-file-upload--loaded {
+  border-color: var(--success-color, #28a745);
+  background: rgba(88, 201, 140, 0.07);
+}
+
+.workflow-step-file-upload--loaded .workflow-step-file-upload__icon {
+  color: var(--success-color, #28a745);
+}
+
+.workflow-step-file-upload__loaded-text {
+  color: var(--success-color, #28a745);
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+/* Configurable page layout */
+.sidebar {
+  border-right: 1px solid var(--border-color);
+}
+
+body.sidebar-right {
+  grid-template-columns: 1fr var(--sidebar-width);
+  grid-template-areas:
+    'header header'
+    'main sidebar'
+    'status status';
+}
+
+body.sidebar-right.sidebar-collapsed {
+  grid-template-columns: 1fr 0;
+}
+
+body.sidebar-right .sidebar {
+  border-right: 0;
+  border-left: 1px solid var(--border-color);
+}
+
+body.sidebar-right .sidebar__toggle {
+  right: var(--sidebar-width);
+  left: auto;
+  clip-path: path('M 20 0 L 10 6 Q 0 6, 0 16 L 0 64 Q 0 74, 10 74 L 20 80 Z');
+}
+
+body.sidebar-right .sidebar__toggle i {
+  margin-right: -3px;
+  margin-left: 0;
+  transform: rotate(180deg);
+}
+
+body.sidebar-right.sidebar-collapsed .sidebar__toggle {
+  right: 0;
+}
+
+body.sidebar-right.sidebar-collapsed .sidebar__toggle i {
+  transform: rotate(0);
+}
+
+body.sidebar-right .panel-resizer--sidebar,
+body.workflow-right .panel-resizer--workflow-panel {
+  left: auto;
+  margin-left: 0;
+  margin-right: -4px;
+}
+
+body.sidebar-right .panel-resizer--sidebar {
+  right: var(--sidebar-width);
+}
+
+body.workflow-right .panel-resizer--workflow-panel {
+  right: calc(var(--panel-offset-right) + var(--workflow-panel-width));
+}
+
+body.workflow-active.workflow-right:not(.workflow-with-sidebar) {
+  grid-template-columns: 1fr var(--workflow-panel-width);
+  grid-template-areas:
+    'header header'
+    'main workflow'
+    'status status';
+}
+
+body.workflow-active.workflow-with-sidebar:not(.sidebar-right):not(.workflow-right) {
+  grid-template-columns: var(--sidebar-width) var(--workflow-panel-width) 1fr;
+  grid-template-areas:
+    'header header header'
+    'sidebar workflow main'
+    'status status status';
+}
+
+body.workflow-active.workflow-with-sidebar:not(.sidebar-right):not(.workflow-right).sidebar-collapsed {
+  grid-template-columns: 0 var(--workflow-panel-width) 1fr;
+}
+
+body.workflow-active.workflow-with-sidebar.sidebar-right:not(.workflow-right) {
+  grid-template-columns: var(--workflow-panel-width) 1fr var(--sidebar-width);
+  grid-template-areas:
+    'header header header'
+    'workflow main sidebar'
+    'status status status';
+}
+
+body.workflow-active.workflow-with-sidebar.sidebar-right:not(.workflow-right).sidebar-collapsed {
+  grid-template-columns: var(--workflow-panel-width) 1fr 0;
+}
+
+body.workflow-active.workflow-with-sidebar:not(.sidebar-right).workflow-right {
+  grid-template-columns: var(--sidebar-width) 1fr var(--workflow-panel-width);
+  grid-template-areas:
+    'header header header'
+    'sidebar main workflow'
+    'status status status';
+}
+
+body.workflow-active.workflow-with-sidebar:not(.sidebar-right).workflow-right.sidebar-collapsed {
+  grid-template-columns: 0 1fr var(--workflow-panel-width);
+}
+
+body.workflow-active.workflow-with-sidebar.sidebar-right.workflow-right {
+  grid-template-columns: 1fr var(--workflow-panel-width) var(--sidebar-width);
+  grid-template-areas:
+    'header header header'
+    'main workflow sidebar'
+    'status status status';
+}
+
+body.workflow-active.workflow-with-sidebar.sidebar-right.workflow-right.sidebar-collapsed {
+  grid-template-columns: 1fr var(--workflow-panel-width) 0;
+}
+
+body.workflow-right .workflow-panel {
+  border-right: 0;
+  border-left: 1px solid var(--border-color);
+}
+
+body.sidebar-right:has(.sidebar) .landing-page {
+  right: var(--sidebar-width);
+  left: 0;
+}
+
+body.sidebar-right.sidebar-collapsed .landing-page {
+  right: 0;
+}
+
+body.status-hidden,
+body.status-hidden.workflow-active {
+  grid-template-rows: var(--header-height) 1fr 0;
+}
+
+body.status-hidden #status-bar {
+  display: none;
+}
+
+body.status-hidden .landing-page {
+  bottom: 0;
+}
+
+/* ===========================================
+   Recorded demo
+   =========================================== */
+/* Centred in the header, where the row is empty in every configuration. Sitting
+   over the views instead would cover the imaging the demo exists to show. */
+.demo-badge {
+  position: fixed;
+  top: calc(var(--header-height) / 2);
+  left: 50%;
+  z-index: 900;
+  transform: translate(-50%, -50%);
+  padding: 4px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: var(--font-size-small);
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.modal.demo-notice {
+  width: min(480px, 100%);
+}

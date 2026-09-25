@@ -1,0 +1,9 @@
+# The static demo is committed build output rather than source. Keeping it
+# byte-for-byte as the build produced it means re-running the build does not
+# surface line-ending-only differences.
+landing/public/demo/** -text
+
+# The client bundle the wheel ships is build output too, and the same applies:
+# a checkout that rewrote its line endings would produce a wheel differing from
+# the one built anywhere else.
+imfusion_webappkit/static/dist/** -text
