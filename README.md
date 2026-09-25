@@ -18,7 +18,7 @@ still change between versions. The kit itself is MIT-licensed, but it runs on
 the ImFusion SDK, which is free for non-commercial use and needs a commercial
 licence otherwise.
 
-![The WebAppKit demo in a browser: a CT volume in three orthogonal views and a 3D rendering, with a sidebar of datasets, layout and display controls and a row of algorithm buttons in the header.](docs/assets/screenshots/app-overview.png)
+![The WebAppKit demo in a browser: a CT volume in three orthogonal views and a 3D rendering, with a sidebar of datasets, layout and display controls and a row of algorithm buttons in the header.](https://raw.githubusercontent.com/ImFusionGmbH/imfusion-webappkit/HEAD/docs/assets/screenshots/app-overview.png)
 
 ## Creating an app
 
@@ -116,7 +116,7 @@ and a validation step that can send the operator back to the brush.
 `SegmentationSummaryStep` is not one of the built-ins: the example defines it as
 a `CustomStep`, which is how a workflow gets a panel the kit does not ship.
 
-![The registration example at its input step: three orthogonal views and a 3D rendering of two brain MRI sessions loaded but not yet aligned, a data model listing both sessions, and a workflow panel for assigning the fixed and moving roles.](docs/assets/screenshots/registration.png)
+![The registration example at its input step: three orthogonal views and a 3D rendering of two brain MRI sessions loaded but not yet aligned, a data model listing both sessions, and a workflow panel for assigning the fixed and moving roles.](https://raw.githubusercontent.com/ImFusionGmbH/imfusion-webappkit/HEAD/docs/assets/screenshots/registration.png)
 
 The screenshot is a different workflow from the snippet above, where two steps
 assign fixed and moving images by role and the registered result then lands in
@@ -166,7 +166,7 @@ instead.
 
 The checkout includes the compiled browser client, so Node.js and npm are not
 needed to run it. They are only required to modify the frontend; see the
-[development guide](docs/development.md).
+[development guide](https://github.com/ImFusionGmbH/imfusion-webappkit/blob/HEAD/docs/development.md).
 
 To scaffold your own project:
 
@@ -181,16 +181,16 @@ The generated project runs as soon as it is created, with `app.py` holding the
 application, `algorithm.py` the processing function you replace, and `AGENTS.md`
 the session, threading, and geometry conventions that coding agents need. Pass
 `--theme gray` for the gray theme instead of the default dark one, and see the
-[command-line documentation](docs/cli.md) for the other templates and flags.
+[command-line documentation](https://github.com/ImFusionGmbH/imfusion-webappkit/blob/HEAD/docs/cli.md) for the other templates and flags.
 
 ## Documentation
 
-- [User guide](docs/index.md)
-- [Getting started](docs/getting-started.md)
-- [Command-line tools](docs/cli.md)
-- [API reference](docs/api/application.md)
-- [Runnable examples](imfusion_webappkit/examples)
-- [Development guide](docs/development.md)
+- [User guide](https://github.com/ImFusionGmbH/imfusion-webappkit/blob/HEAD/docs/index.md)
+- [Getting started](https://github.com/ImFusionGmbH/imfusion-webappkit/blob/HEAD/docs/getting-started.md)
+- [Command-line tools](https://github.com/ImFusionGmbH/imfusion-webappkit/blob/HEAD/docs/cli.md)
+- [API reference](https://github.com/ImFusionGmbH/imfusion-webappkit/blob/HEAD/docs/api/application.md)
+- [Runnable examples](https://github.com/ImFusionGmbH/imfusion-webappkit/blob/HEAD/imfusion_webappkit/examples)
+- [Development guide](https://github.com/ImFusionGmbH/imfusion-webappkit/blob/HEAD/docs/development.md)
 
 If the kit does not fit how you work, or you need a commercial ImFusion SDK
 licence, email
