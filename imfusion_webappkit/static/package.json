@@ -1,6 +1,6 @@
 {
   "name": "imfusion-webappkit-client",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Client-side files for ImFusion WebAppKit",
   "type": "module",
   "engines": {

@@ -9,7 +9,7 @@ export function Footer() {
         </a>
 
         <Typo.Small className="foot__legal" variant="oncolor">
-          imfusion-webappkit 0.3.0 · alpha
+          imfusion-webappkit 0.3.1 · alpha
         </Typo.Small>
       </div>
     </footer>
